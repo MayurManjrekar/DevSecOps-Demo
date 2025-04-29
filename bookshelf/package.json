@@ -1,5 +1,5 @@
 {
-  "type": "module",  //added
+  "type": "module", 
   "name": "nodejs-getting-started",
   "description": "End to end sample for running Node.js applications on Google Cloud Platform",
   "license": "Apache-2.0",
@@ -23,9 +23,9 @@
     "pug": "^3.0.0"
   },
   "devDependencies": {
-    "@eslint/js": "^8.0.0",  //added
-    "eslint": "^9.0.0",      //added
-    "eslint-plugin-security": "^2.0.0"  //added
+    "@eslint/js": "^8.0.0",  
+    "eslint": "^9.0.0",      
+    "eslint-plugin-security": "^2.0.0"  
     "mocha": "^9.0.0",
     "supertest": "^6.0.0"
   }
