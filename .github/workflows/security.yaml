@@ -1,0 +1,68 @@
+name: Security Checks
+on:
+  workflow_dispatch:
+  push:
+    branches: 
+      - main
+
+jobs:
+  Linting:
+    name: Code Linting with Security Rules
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ github.workspace }}/oneline-botique-src
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install npm packages
+        run: npm install --force
+
+      - name: code Linting 
+        run: npm run lint
+
+      # # --- Static Application Security Testing (SAST) ---
+      # - name: Run SAST with SonarCloud Scanner
+      #   uses: sonarsource/sonarcloud-github-action@master
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }} # Ensure you've added this secret in GitHub
+
+      # # --- Dependency Scanning ---
+      # - name: Run Dependency Check with OWASP Dependency-Check
+      #   uses: actions/dependency-check@v3
+      #   with:
+      #     project: 'your-project-name' # Replace with your project name
+      #     scan_type: 'All'
+      #     fail_on_severity: 'HIGH' # Adjust severity level as needed
+
+      # # --- Code Linting with Security Rules ---
+      # - name: Run ESLint with Security Plugin (for JavaScript/TypeScript)
+      #   if: ${{ contains(github.event.commits.*.message, 'skip lint') == false }} # Option to skip linting in specific commits
+      #   uses: eslint/eslint@v3
+      #   with:
+      #     extensions: .js,.jsx,.ts,.tsx
+      #     overrideConfig: |
+      #       {
+      #         "plugins": ["security"],
+      #         "extends": ["eslint:recommended", "plugin:security/recommended"],
+      #         "rules": {
+      #           // Add or override specific security rules here if needed
+      #         }
+      #       }
+
+      # # --- Secret Scanning ---
+      # - name: Run Secret Scanning with TruffleHog
+      #   uses: trufflesecurity/trufflehog@v3
+      #   with:
+      #     scan_arguments: '--max-depth 10 --only-entropy --entropy-threshold 2.5' # Adjust scan depth and entropy as needed
+
+      # # --- Container Scanning (if applicable) ---
+      # - name: Build and Scan Docker Image (if Dockerfile exists)
+      #   if: ${{ file_exists('Dockerfile') }}
+      #   run: |
+      #     docker build -t my-app .
+      #     docker scan --fail-on severity=HIGH my-app # Requires Docker integration and appropriate setup
