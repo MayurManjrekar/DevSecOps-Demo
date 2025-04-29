@@ -33,8 +33,8 @@ jobs:
     - name: Lint with ESLint
       run: npx eslint .
 
-    # - name: Security Scan (npm audit)
-    #   run: npm audit --audit-level=high
+    - name: Security Scan (npm audit)
+      run: npm audit --audit-level=high
 
     # - name: Security Scan (eslint-plugin-security)
     #   run: npx eslint --plugin eslint-plugin-security .
