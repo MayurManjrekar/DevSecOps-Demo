@@ -9,9 +9,6 @@ jobs:
   Linting:
     name: Code Linting with Security Rules
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node_version: [14]
     defaults:
       run:
         shell: bash
