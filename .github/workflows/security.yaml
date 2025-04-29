@@ -26,11 +26,15 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    - name: Install ESLint
-      run: npm install --save-dev eslint/js
-      
+    - name: Install @eslint/js explicitly
+      run: npm install --save-dev @eslint/js
+
+    - name: Install ESLint and security plugin
+      run: npm install --save-dev eslint eslint-plugin-security
+
     - name: Lint with ESLint
       run: npx eslint .
+
 
 
     # - name: Security Scan (npm audit)
