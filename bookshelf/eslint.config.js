@@ -3,11 +3,12 @@ import js from '@eslint/js';
 import security from 'eslint-plugin-security';
 
 export default [
-  js.configs.recommended, // Add the recommended rules as a separate config
+  js.configs.recommended,
   {
     files: ['**/*.js'],
     languageOptions: {
       globals: {
+        ...js.configs.recommended.languageOptions.globals,
         require: 'readonly',
         module: 'readonly',
         exports: 'readonly',
@@ -15,6 +16,8 @@ export default [
         __filename: 'readonly',
         console: 'readonly',
         process: 'readonly',
+        describe: 'readonly', // Add Mocha's describe
+        it: 'readonly',       // Add Mocha's it
       },
     },
     plugins: {
