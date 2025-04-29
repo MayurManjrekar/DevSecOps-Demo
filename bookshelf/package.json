@@ -24,6 +24,9 @@
   },
   "devDependencies": {
     "mocha": "^9.0.0",
-    "supertest": "^6.0.0"
+    "supertest": "^6.0.0",
+    "eslint": "^9.0.0",           
+    "@eslint/js": "^8.0.0",          
+    "eslint-plugin-security": "^2.0.0" 
   }
 }
