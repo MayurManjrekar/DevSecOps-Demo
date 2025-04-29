@@ -12,54 +12,26 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ${{ github.workspace }}/src
+        working-directory: ${{ github.workspace }}/bookshelf
 
     steps:
 
-      - name: Checkout
-        uses: actions/checkout@v2
+    - name: Checkout
+      uses: actions/checkout@v4
 
-      - name: Install npm packages
-        run: npm install --force
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 'lts/*'
 
-      - name: code Linting 
-        run: npm run lint
+    - name: Clean node_modules
+      run: rm -rf node_modules package-lock.json
 
+    - name: Install dependencies
+      run: npm install
 
-      # - uses: actions/checkout@v4
-      # - name: Set up Node.js
-      #   uses: actions/setup-node@v4
-      #   with:
-      #     node-version: 'lts/*'
-
-      # - name: run CI
-      #   run: npm install # or yarn install
-
-      # - name: run lint
-      #   run: npm run lint # or yarn lint
-        
-      # - name: run test
-      #   run: npm run test # or yarn test
-         
-      # - name: run build
-      #   run: npm run build # or yarn build
-
-
-
-
-    # - name: Set up Node.js
-    #   uses: actions/setup-node@v4
-    #   with:
-    #     node-version: 'lts/*'
-
-    # - name: Clean node_modules
-    #   run: rm -rf node_modules package-lock.json
-
-    # - name: Install dependencies
-    #   run: npm install
-
-    # - name: Lint with ESLint
-    #   run: npx eslint .
+    - name: Lint with ESLint
+      run: npx eslint .
 
     # - name: Security Scan (npm audit)
     #   run: npm audit --audit-level=high
@@ -122,3 +94,22 @@ jobs:
       #   run: |
       #     docker build -t my-app .
       #     docker scan --fail-on severity=HIGH my-app # Requires Docker integration and appropriate setup
+
+
+      # - uses: actions/checkout@v4
+      # - name: Set up Node.js
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: 'lts/*'
+
+      # - name: run CI
+      #   run: npm install # or yarn install
+
+      # - name: run lint
+      #   run: npm run lint # or yarn lint
+        
+      # - name: run test
+      #   run: npm run test # or yarn test
+         
+      # - name: run build
+      #   run: npm run build # or yarn build
