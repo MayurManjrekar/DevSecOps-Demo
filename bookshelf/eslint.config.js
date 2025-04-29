@@ -1,13 +1,17 @@
 // eslint.config.js
-import legacy from '@eslint/js/use-at-your-own-risk';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import js from '@eslint/js';
+import security from 'eslint-plugin-security';
 
 export default [
-  legacy.config({
-    configFile: join(__dirname, '.eslintrc.js'), // Adjust the filename if yours is different
-  }),
+  js.configs.recommended,
+  {
+    plugins: {
+      security,
+    },
+    rules: {
+      'security/detect-object-injection': 'warn',
+      'security/detect-possible-timing-attacks': 'warn',
+      // Add other security rules or your custom rules here
+    },
+  },
 ];
