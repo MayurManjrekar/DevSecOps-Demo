@@ -2,13 +2,17 @@
 import js from '@eslint/js';
 import security from 'eslint-plugin-security';
 
+const recommendedGlobals = js.configs.recommended.languageOptions?.globals || {};
+
 export default [
-  js.configs.recommended,
+  {
+    ...js.configs.recommended, // Apply recommended rules directly
+  },
   {
     files: ['**/*.js'],
     languageOptions: {
       globals: {
-        ...js.configs.recommended.languageOptions.globals,
+        ...recommendedGlobals,
         require: 'readonly',
         module: 'readonly',
         exports: 'readonly',
@@ -16,8 +20,8 @@ export default [
         __filename: 'readonly',
         console: 'readonly',
         process: 'readonly',
-        describe: 'readonly', // Add Mocha's describe
-        it: 'readonly',       // Add Mocha's it
+        describe: 'readonly',
+        it: 'readonly',
       },
     },
     plugins: {
