@@ -2,7 +2,6 @@
 import legacy from '@eslint/js/use-at-your-own-risk';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import legacy from '@eslint/js/use-at-your-own-risk';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
