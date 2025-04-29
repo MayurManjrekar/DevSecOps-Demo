@@ -9,6 +9,10 @@ jobs:
   Linting:
     name: Code Linting with Security Rules
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ github.workspace }}/bookshelf
 
     steps:
     - name: Checkout code
