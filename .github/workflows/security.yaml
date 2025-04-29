@@ -68,4 +68,4 @@ jobs:
       if: failure()
       run: |
         echo "Secret scanning found potential secrets!"
-        exit 1 # Fail the workflow explicitly if secrets are found
+        exit 1
