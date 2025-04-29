@@ -15,28 +15,40 @@ jobs:
         working-directory: ${{ github.workspace }}/bookshelf
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: 'lts/*'
+      - name: Install npm packages
+        run: npm install --force
 
-    - name: Install dependencies
-      run: npm install
+      - name: code Linting 
+        run: npm run lint
 
-    - name: Install ESLint
-      run: npm install --save-dev eslint/js
+
+
+
+
+    # - name: Set up Node.js
+    #   uses: actions/setup-node@v4
+    #   with:
+    #     node-version: 'lts/*'
+
+    # - name: Install dependencies
+    #   run: npm install
+
+    # - name: Install ESLint
+    #   run: npm install --save-dev eslint/js
       
-    - name: Lint with ESLint
-      run: npx eslint .
+    # - name: Lint with ESLint
+    #   run: npx eslint .
 
     # - name: Security Scan (npm audit)
     #   run: npm audit --audit-level=high
 
     # - name: Security Scan (eslint-plugin-security)
     #   run: npx eslint --plugin eslint-plugin-security .
+
+
 
 
 
