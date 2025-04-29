@@ -6,7 +6,11 @@ const recommendedGlobals = js.configs.recommended.languageOptions?.globals || {}
 
 export default [
   {
-    ...js.configs.recommended, // Apply recommended rules directly
+    ...js.configs.recommended,
+    rules: {
+      ...js.configs.recommended.rules,
+      semi: ['error', 'always'], // Enforce semicolons as errors
+    },
   },
   {
     files: ['**/*.js'],
