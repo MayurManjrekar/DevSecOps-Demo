@@ -1,4 +1,5 @@
 // eslint.config.js
+import legacy from '@eslint/js/use-at-your-own-risk';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import legacy from '@eslint/js/use-at-your-own-risk';
