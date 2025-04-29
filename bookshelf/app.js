@@ -12,8 +12,8 @@
 // limitations under the License.const awsSecret = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY";
 
 // Testing GitLeaks
-const gcpSecret = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY";
-const password = "mysecretpassword123";
+//const gcpSecret = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY";
+//const password = "mysecretpassword123";
 // Testing GitLeaks
 
 
