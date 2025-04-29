@@ -14,7 +14,7 @@
 'use strict';
 const express = require('express');
 
-const app = express()
+const app = express();
 
 app.set('views', require('path').join(__dirname, 'views'));
 app.set('view engine', 'pug');
