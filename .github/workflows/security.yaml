@@ -9,20 +9,38 @@ jobs:
   Linting:
     name: Code Linting with Security Rules
     runs-on: ubuntu-latest
-    # defaults:
-    #   run:
-    #     shell: bash
-    #     working-directory: ${{ github.workspace }}/oneline-botique-src
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-      - name: Install npm packages
-        run: npm install --force
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 'lts/*'
 
-      - name: code Linting 
-        run: npm run lint
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Lint with ESLint
+      run: npx eslint .
+
+    # - name: Security Scan (npm audit)
+    #   run: npm audit --audit-level=high
+
+    # - name: Security Scan (eslint-plugin-security)
+    #   run: npx eslint --plugin eslint-plugin-security .
+
+
+
+      # - name: Checkout
+      #   uses: actions/checkout@v2
+
+      # - name: Install npm packages
+      #   run: npm install --force
+
+      # - name: code Linting 
+      #   run: npm run lint
 
       # # --- Static Application Security Testing (SAST) ---
       # - name: Run SAST with SonarCloud Scanner
