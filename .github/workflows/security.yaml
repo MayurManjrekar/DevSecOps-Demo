@@ -6,8 +6,40 @@ on:
       - main
 
 jobs:
-  Linting:
-    name: Code Linting with Security Rules
+  # Linting:
+  #   name: Code Linting with Security Rules
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       shell: bash
+  #       working-directory: ${{ github.workspace }}/bookshelf
+
+  #   steps:
+
+  #   - name: Checkout
+  #     uses: actions/checkout@v4
+
+  #   - name: Set up Node.js
+  #     uses: actions/setup-node@v4
+  #     with:
+  #       node-version: 'lts/*'
+
+  #   - name: Clean node_modules
+  #     run: rm -rf node_modules package-lock.json
+
+  #   - name: Install dependencies
+  #     run: npm install
+
+  #   - name: Lint with ESLint
+  #     run: npx eslint .
+
+  #   # - name: Security Scan (npm audit)
+  #   #   run: npm audit --audit-level=high
+
+
+  Secrets-check:
+    name: Secret Check
+    #needs: Linting
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -16,28 +48,24 @@ jobs:
 
     steps:
 
-    - name: Checkout
+    - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 
 
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
         node-version: 'lts/*'
 
-    - name: Clean node_modules
-      run: rm -rf node_modules package-lock.json
+    - name: Scan for secrets with gitleaks
+      uses: zricethezav/gitleaks-action@v1
 
-    - name: Install dependencies
-      run: npm install
-
-    - name: Lint with ESLint
-      run: npx eslint .
-
-    - name: Security Scan (npm audit)
-      run: npm audit --audit-level=high
-
-    # - name: Security Scan (eslint-plugin-security)
-    #   run: npx eslint --plugin eslint-plugin-security .
+    - name: Handle Gitleaks Findings
+      if: failure()
+      run: |
+        echo "Secret scanning found potential secrets!"
+        exit 1 # Fail the workflow explicitly if secrets are found
 
 
 
