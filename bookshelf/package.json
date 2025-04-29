@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "name": "nodejs-getting-started",
   "description": "End to end sample for running Node.js applications on Google Cloud Platform",
   "license": "Apache-2.0",
