@@ -1,0 +1,52 @@
+name: TruffleHog Secret Scan
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'bookshelf/**'
+      - '.github/workflows/trufflehog-scan.yaml'
+  pull_request:
+    paths:
+      - 'bookshelf/**'
+      - '.github/workflows/trufflehog-scan.yaml'
+
+jobs:
+  trufflehog-scan:
+    name: TruffleHog Secret Scan
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ github.workspace }}/bookshelf
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # Recommended for scanning history
+
+    - name: Install TruffleHog
+      run: |
+        pip install trufflehog
+
+    - name: Scan for secrets with TruffleHog
+      id: trufflehog-scan
+      run: trufflehog --json --only-explicit --entropy-threshold 2.0 --filepaths .
+
+    - name: Handle TruffleHog Findings
+      if: steps.trufflehog-scan.outcome == 'success' && steps.trufflehog-scan.outputs.report != '[]'
+      run: |
+        echo "::error:: TruffleHog found potential secrets! Please review the output for details."
+        echo "${{ steps.trufflehog-scan.outputs.report }}"
+        exit 1
+      else:
+        run: echo "TruffleHog scan completed. No secrets found."
+
+    - name: Upload TruffleHog Report as Artifact (Optional)
+      uses: actions/upload-artifact@v4
+      if: steps.trufflehog-scan.outcome == 'success' && steps.trufflehog-scan.outputs.report != '[]'
+      with:
+        name: trufflehog-report
+        path: ${{ steps.trufflehog-scan.outputs.report_path }}
