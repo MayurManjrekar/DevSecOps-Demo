@@ -40,6 +40,15 @@ jobs:
         name: gitleaks-report
         path: gitleaks-report.json
 
+    - name: List Files After Gitleaks
+      run: ls -al ${{ github.workspace }}/bookshelf
+
+    - uses: actions/upload-artifact@main
+      name: Uploading Infrastructure Artifact
+      with:
+        name: gitleaks-report
+        path: ./bookshelf/*
+
     - name: Handle Gitleaks Findings
       if: steps.gitleaks-scan.outcome == 'success' && steps.gitleaks-scan.outputs.report != '[]'
       run: |
