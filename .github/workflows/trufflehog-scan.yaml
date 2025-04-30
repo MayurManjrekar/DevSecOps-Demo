@@ -36,13 +36,13 @@ jobs:
       run: trufflehog --json --only-explicit --entropy-threshold 2.0 --filepaths .
 
     - name: Handle TruffleHog Findings
-      if: steps.trufflehog-scan.outcome == 'success' && steps.trufflehog-scan.outputs.report != '[]'
       run: |
-        echo "::error:: TruffleHog found potential secrets! Please review the output for details."
-        echo "${{ steps.trufflehog-scan.outputs.report }}"
-        exit 1
-      else:
-        run: echo "TruffleHog scan completed. No secrets found."
+        if steps.trufflehog-scan.outcome == 'success' && steps.trufflehog-scan.outputs.report != '[]'; then
+          echo "::error:: TruffleHog found potential secrets! Please review the output for details."
+          echo "${{ steps.trufflehog-scan.outputs.report }}"
+          exit 1
+        fi
+        echo "TruffleHog scan completed. No secrets found."
 
     - name: Upload TruffleHog Report as Artifact (Optional)
       uses: actions/upload-artifact@v4
