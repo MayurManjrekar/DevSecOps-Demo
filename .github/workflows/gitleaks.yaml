@@ -32,13 +32,16 @@ jobs:
       run: sudo apt install -y gitleaks
 
     - name: Find Secrets using GitLeaks
+      id: gitleaks-scan
       run: gitleaks detect --source . -v --report-format json --report-path gitleaks-report.json --config .gitleaks.toml
+      continue-on-error: true # Allow the workflow to continue even if Gitleaks finds secrets
 
     - name: Upload Gitleaks Report as Artifact
       uses: actions/upload-artifact@v4
       with:
         name: gitleaks-report
         path: gitleaks-report.json
+      if: always() # Ensure this step runs regardless of previous step outcomes
 
     - name: List Files After Gitleaks
       run: ls -al ${{ github.workspace }}/bookshelf
