@@ -30,7 +30,7 @@ jobs:
       run: sudo apt install -y gitleaks
 
     - name: Find Secrets using GitLeaks
-      run: gitleaks detect --source . -v --report-format json --report-path gitleaks-report.json --config .gitleaks.toml
+      run: gitleaks detect --source . -v --report-format json --report-path gitleaks-report.json
       continue-on-error: true # Allow the workflow to continue even if Gitleaks finds secrets
 
     - name: Upload Gitleaks Report as Artifact
