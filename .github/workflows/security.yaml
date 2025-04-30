@@ -41,6 +41,9 @@ jobs:
     name: Secret Check
     needs: Linting
     runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      actions: read 
     defaults:
       run:
         shell: bash
