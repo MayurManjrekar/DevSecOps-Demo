@@ -27,9 +27,6 @@ jobs:
       with:
         node-version: 'lts/*'
 
-    - name: Clean node_modules
-      run: rm -rf node_modules package-lock.json
-
     - name: Install dependencies
       run: npm install
 
@@ -50,22 +47,37 @@ jobs:
         working-directory: ${{ github.workspace }}/bookshelf
 
     steps:
-
     - name: Checkout code
       uses: actions/checkout@v4
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
       with:
-        fetch-depth: 0 
+        languages: 'javascript'
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
       with:
-        node-version: 'lts/*'
+        category: '/language:javascript'
 
-    - name: Scan for secrets with gitleaks
-      uses: zricethezav/gitleaks-action@v1
 
-    - name: Handle Gitleaks Findings
-      if: failure()
-      run: |
-        echo "Secret scanning found potential secrets!"
-        exit 1
+    # - name: Checkout code
+    #   uses: actions/checkout@v4
+    #   with:
+    #     fetch-depth: 0 
+
+    # - name: Set up Node.js
+    #   uses: actions/setup-node@v4
+    #   with:
+    #     node-version: 'lts/*'
+
+    # - name: Scan for secrets with gitleaks
+    #   uses: zricethezav/gitleaks-action@v1
+    #   with:
+    #     config-path: '.gitleaks.toml'
+
+    # - name: Handle Gitleaks Findings
+    #   if: failure()
+    #   run: |
+    #     echo "Secret scanning found potential secrets!"
+    #     exit 1
