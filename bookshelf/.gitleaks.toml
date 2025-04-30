@@ -7,6 +7,6 @@
 
 [paths]
   exclude = [
-    ".gitleaks.toml"
+    "./.gitleaks.toml"
     # Add any other paths or patterns to exclude here
   ]
