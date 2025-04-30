@@ -3,3 +3,10 @@
   description = "Detects direct assignment of gcp-secret-key"
   regex = '''gcp-secret-key="[^"]*"'''
   tags = ["gcp", "secret", "direct-assignment"]
+  files = ['*.js'] # Consider limiting to JavaScript files
+
+[paths]
+  exclude = [
+    ".gitleaks.toml"
+    # Add any other paths or patterns to exclude here
+  ]
