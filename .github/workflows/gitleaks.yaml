@@ -2,7 +2,7 @@ name: gitleaks
 on:
   workflow_dispatch:
   push:
-    branches: 
+    branches:
       - main
     paths:
       - bookshelf/**
@@ -26,9 +26,17 @@ jobs:
       with:
         node-version: 'lts/*'
 
-    - name: Install gitleaks 
+    - name: Install gitleaks
       run: |
-        sudo apt install gitleaks
+        sudo apt install -y gitleaks
 
     - name: Find Secrets using GitLeaks
-      run: gitleaks detect --source . -v
+      id: gitleaks-scan
+      run: gitleaks detect --source . -v --report-format json --report-path gitleaks-report.json
+
+    - name: Handle Gitleaks Findings
+      if: steps.gitleaks-scan.outcome == 'success' && steps.gitleaks-scan.outputs.report != '[]'
+      run: |
+        echo "::error:: Gitleaks found potential secrets! Review gitleaks-report.json for details."
+        cat gitleaks-report.json
+        exit 1
