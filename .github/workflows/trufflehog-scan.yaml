@@ -31,7 +31,7 @@ jobs:
 
     - name: Scan for secrets with TruffleHog
       id: trufflehog-scan
-      run: trufflehog --json --only-explicit --entropy-threshold 2.0 --filepaths .
+      run: trufflehog github ${{ github.repository }} --since-commit HEAD~1 --json
 
     - name: Handle TruffleHog Findings
       run: |
