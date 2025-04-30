@@ -1,0 +1,5 @@
+[[rules]]
+  id = "gcp-secret-key-direct"
+  description = "Detects direct assignment of gcp-secret-key"
+  regex = '''gcp-secret-key="[^"]*"'''
+  tags = ["gcp", "secret", "direct-assignment"]

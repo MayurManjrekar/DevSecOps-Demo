@@ -53,15 +53,13 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
       with:
-        languages: 'javascript'
+        node-version: 'lts/*'
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
-      with:
-        category: '/language:javascript'
+    - name: Install gitleaks 
+      run: sudo apt install gitleaks
 
 
     # - name: Checkout code

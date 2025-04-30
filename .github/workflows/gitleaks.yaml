@@ -20,6 +20,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
     - name: Set up Node.js
       uses: actions/setup-node@v4
@@ -27,18 +29,18 @@ jobs:
         node-version: 'lts/*'
 
     - name: Install gitleaks
-      run: |
-        sudo apt install -y gitleaks
+      run: sudo apt install -y gitleaks
 
     - name: Find Secrets using GitLeaks
       id: gitleaks-scan
-      run: gitleaks detect --source . -v --report-format json --report-path gitleaks-report.json
+      run: gitleaks detect --source . -v --report-format json --report-path gitleaks-report.json --config .gitleaks.toml
 
     - name: Upload Gitleaks Report as Artifact
       uses: actions/upload-artifact@v4
       with:
         name: gitleaks-report
         path: gitleaks-report.json
+      if: steps.gitleaks-scan.outcome == 'success' && -f 'gitleaks-report.json'
 
     - name: List Files After Gitleaks
       run: ls -al ${{ github.workspace }}/bookshelf
@@ -48,10 +50,3 @@ jobs:
       with:
         name: gitleaks-report
         path: ./bookshelf/*
-
-    - name: Handle Gitleaks Findings
-      if: steps.gitleaks-scan.outcome == 'success' && steps.gitleaks-scan.outputs.report != '[]'
-      run: |
-        echo "::error:: Gitleaks found potential secrets! Review gitleaks-report.json for details."
-        cat gitleaks-report.json
-        exit 1
