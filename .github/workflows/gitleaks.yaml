@@ -32,7 +32,6 @@ jobs:
       run: sudo apt install -y gitleaks
 
     - name: Find Secrets using GitLeaks
-      id: gitleaks-scan
       run: gitleaks detect --source . -v --report-format json --report-path gitleaks-report.json --config .gitleaks.toml
 
     - name: Upload Gitleaks Report as Artifact
@@ -40,7 +39,6 @@ jobs:
       with:
         name: gitleaks-report
         path: gitleaks-report.json
-      if: steps.gitleaks-scan.outcome == 'success' && -f 'gitleaks-report.json'
 
     - name: List Files After Gitleaks
       run: ls -al ${{ github.workspace }}/bookshelf
