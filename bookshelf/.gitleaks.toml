@@ -25,4 +25,4 @@ redact = true
 
 # Consider scanning the entire history for thoroughness
 [options]
-  scan_history = true
+  scan_history = false
