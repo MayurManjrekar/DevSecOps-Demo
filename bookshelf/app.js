@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 
 secret="password128"
-
+gcp-secret-key-password="kadbPassword"
 API_KEY="makdsi@"
 'use strict';
 const express = require('express');
