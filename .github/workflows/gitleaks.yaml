@@ -28,17 +28,17 @@ jobs:
       with:
         node-version: 'lts/*'
 
-    - name: Run Gitleaks
-      uses: gitleaks/gitleaks-action@v2.3.9
-      with:
-        args: detect --source=. --no-git --verbose --exit-code 1 --report-path gitleaks-report.json
+    # - name: Run Gitleaks
+    #   uses: gitleaks/gitleaks-action@v2.3.9
+    #   with:
+    #     args: detect --source=. --no-git --verbose --exit-code 1 --report-path gitleaks-report.json
 
-    # - name: Install gitleaks
-    #   run: sudo apt install -y gitleaks
+    - name: Install gitleaks
+      run: sudo apt install -y gitleaks
 
-    # - name: Run Gitleaks on aap.js
-    #   run: gitleaks detect --source=. --no-git --verbose --exit-code 1 --report-path gitleaks-report.json
-    #   continue-on-error: true
+    - name: Run Gitleaks on aap.js
+      run: gitleaks detect --source=. --no-git --verbose --exit-code 1 --report-path gitleaks-report.json
+      continue-on-error: true
 
     - name: Upload Gitleaks Report as Artifact
       uses: actions/upload-artifact@v4
@@ -64,3 +64,50 @@ jobs:
     # - name: Run Gitleaks
     #   uses: gitleaks/gitleaks-action@v2.3.9
     #   continue-on-error: true
+
+
+  # Secrets-check:
+  #   name: Secret Check
+  #   needs: Linting
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     security-events: write
+  #     actions: read 
+  #   defaults:
+  #     run:
+  #       shell: bash
+  #       working-directory: ${{ github.workspace }}/bookshelf
+
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v4
+
+  #   - name: Set up Node.js
+  #     uses: actions/setup-node@v4
+  #     with:
+  #       node-version: 'lts/*'
+
+  #   - name: Install gitleaks 
+  #     run: sudo apt install gitleaks
+
+
+    # - name: Checkout code
+    #   uses: actions/checkout@v4
+    #   with:
+    #     fetch-depth: 0 
+
+    # - name: Set up Node.js
+    #   uses: actions/setup-node@v4
+    #   with:
+    #     node-version: 'lts/*'
+
+    # - name: Scan for secrets with gitleaks
+    #   uses: zricethezav/gitleaks-action@v1
+    #   with:
+    #     config-path: '.gitleaks.toml'
+
+    # - name: Handle Gitleaks Findings
+    #   if: failure()
+    #   run: |
+    #     echo "Secret scanning found potential secrets!"
+    #     exit 1

@@ -73,48 +73,34 @@ jobs:
         name: audit-report
         path: bookshelf/npm_audit_report.json
 
-  # Secrets-check:
-  #   name: Secret Check
-  #   needs: Linting
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     security-events: write
-  #     actions: read 
-  #   defaults:
-  #     run:
-  #       shell: bash
-  #       working-directory: ${{ github.workspace }}/bookshelf
+  Secrets-check:
+    name: Secret Check 
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ github.workspace }}/bookshelf
 
-  #   steps:
-  #   - name: Checkout code
-  #     uses: actions/checkout@v4
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
-  #   - name: Set up Node.js
-  #     uses: actions/setup-node@v4
-  #     with:
-  #       node-version: 'lts/*'
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 'lts/*'
 
-  #   - name: Install gitleaks 
-  #     run: sudo apt install gitleaks
+    - name: Install gitleaks
+      run: sudo apt install -y gitleaks
 
+    - name: Run Gitleaks on aap.js
+      run: gitleaks detect --source=. --no-git --verbose --exit-code 1 --report-path gitleaks-report.json
+      continue-on-error: true
 
-    # - name: Checkout code
-    #   uses: actions/checkout@v4
-    #   with:
-    #     fetch-depth: 0 
-
-    # - name: Set up Node.js
-    #   uses: actions/setup-node@v4
-    #   with:
-    #     node-version: 'lts/*'
-
-    # - name: Scan for secrets with gitleaks
-    #   uses: zricethezav/gitleaks-action@v1
-    #   with:
-    #     config-path: '.gitleaks.toml'
-
-    # - name: Handle Gitleaks Findings
-    #   if: failure()
-    #   run: |
-    #     echo "Secret scanning found potential secrets!"
-    #     exit 1
+    - name: Upload Gitleaks Report as Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: gitleaks-report
+        path: bookshelf/gitleaks-report.json
