@@ -70,7 +70,7 @@ jobs:
     - name: Upload Audit Report Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: eslint-report
+        name: audit-report
         path: bookshelf/npm_audit_report.json
 
   # Secrets-check:
