@@ -36,15 +36,11 @@ jobs:
       run: npx eslint . --output-file eslint_report.txt --format stylish
       continue-on-error: true
       
-    - uses: actions/upload-artifact@v4
-      name: Uploading ESLint Report Artifact
+    - name: Upload ESLint Report Artifact
+      uses: actions/upload-artifact@v4
       with:
         name: eslint-report
-        path: eslint_report.txt
-        if-no-files-found: warn
-        compression-level: 6
-        overwrite: false
-        include-hidden-files: false
+        path: bookshelf/eslint_report.txt
 
     # - name: Security Scan (npm audit)
     #   run: npm audit --audit-level=high
