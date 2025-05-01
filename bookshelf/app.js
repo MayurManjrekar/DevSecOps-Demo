@@ -12,7 +12,7 @@
 
 gcp-secret-key="securepass@12"
 const secrets_key="secretpassword"
-api_key="secure-api-key"
+// api_key="secure-api-key"
 
 'use strict';
 const express = require('express');

@@ -28,13 +28,6 @@ jobs:
       with:
         node-version: 'lts/*'
 
-    - name: Install gitleaks
-      run: sudo apt install -y gitleaks
-
-    - name: Find Secrets using GitLeaks
-      run: gitleaks detect --source . -v --report-format json --report-path gitleaks-report.json
-      continue-on-error: true
-
     - name: Run Gitleaks
       uses: gitleaks/gitleaks-action@v2.3.9
       continue-on-error: true
@@ -45,3 +38,11 @@ jobs:
         name: gitleaks-report
         path: bookshelf/result.sarif
 
+
+
+    # - name: Install gitleaks
+    #   run: sudo apt install -y gitleaks
+
+    # - name: Find Secrets using GitLeaks
+    #   run: gitleaks detect --source . -v --report-format json --report-path gitleaks-report.json --config
+    #   continue-on-error: true
