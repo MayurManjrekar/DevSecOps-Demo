@@ -12,6 +12,10 @@ on:
 jobs:
   setup:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ github.workspace }}/bookshelf
     outputs:
       node-cache: ${{ steps.cache-node.outputs.cache-hit }}
     steps:
@@ -36,9 +40,13 @@ jobs:
       run: |
         npm install
         npm install -D eslint-formatter-table
-        
+
   Linting:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ github.workspace }}/bookshelf
     needs: setup
     steps:
     - name: Lint with ESLint
@@ -53,6 +61,10 @@ jobs:
 
   Secrets-check:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ github.workspace }}/bookshelf
     needs: setup
     steps:
     - name: Install Gitleaks
@@ -70,6 +82,10 @@ jobs:
 
   Auditing:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ github.workspace }}/bookshelf
     needs: setup
     steps:
     - name: Run npm audit
