@@ -10,7 +10,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 
-gcp-secret-key="securepass@12"
 const secrets_key="secretpassword"
 // api_key="secure-api-key"
 
