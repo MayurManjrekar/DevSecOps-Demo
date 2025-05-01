@@ -30,16 +30,12 @@ jobs:
 
     - name: Gitleaks
       uses: gitleaks/gitleaks-action@v2.3.9
-      # Configure Gitleaks to output a JSON report
-      with:
-        args: --verbose --report-format json --report-path gitleaks-report.json .
 
     - name: Upload Gitleaks Report as Artifact
       uses: actions/upload-artifact@v4
       with:
         name: gitleaks-report
-        path: bookshelf/gitleaks-report.json
-
+        path: bookshelf/result.sarif
 
 
     # - name: Install gitleaks
