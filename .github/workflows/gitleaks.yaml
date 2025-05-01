@@ -28,17 +28,14 @@ jobs:
       with:
         node-version: 'lts/*'
 
-    - name: Run Gitleaks
-      uses: gitleaks/gitleaks-action@v2.3.9
-      continue-on-error: true
+    - name: Install Gitleaks
+      run: |
+        curl -sSL https://github.com/gitleaks/gitleaks/releases/latest/download/gitleaks-linux-amd64 -o gitleaks
+        chmod +x gitleaks
+        sudo mv gitleaks /usr/local/bin/
 
-    - name: Upload Gitleaks Report as Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: gitleaks-report
-        path: bookshelf/result.sarif
-
-
+    - name: Run Gitleaks on aap.js
+      run: gitleaks detect --source=aap.js --no-git --verbose --exit-code 1
 
     # - name: Install gitleaks
     #   run: sudo apt install -y gitleaks
@@ -46,3 +43,13 @@ jobs:
     # - name: Find Secrets using GitLeaks
     #   run: gitleaks detect --source . -v --report-format json --report-path gitleaks-report.json --config
     #   continue-on-error: true
+
+    # - name: Run Gitleaks
+    #   uses: gitleaks/gitleaks-action@v2.3.9
+    #   continue-on-error: true
+
+    - name: Upload Gitleaks Report as Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: gitleaks-report
+        path: bookshelf/result.sarif
