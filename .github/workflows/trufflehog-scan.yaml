@@ -7,10 +7,6 @@ on:
     paths:
       - 'bookshelf/**'
       - '.github/workflows/trufflehog-scan.yaml'
-  pull_request:
-    paths:
-      - 'bookshelf/**'
-      - '.github/workflows/trufflehog-scan.yaml'
 
 jobs:
   trufflehog-scan:
@@ -25,26 +21,31 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Install TruffleHog
-      run: |
-        pip install trufflehog
-
-    - name: Scan for secrets with TruffleHog
-      id: trufflehog-scan
-      run: trufflehog github ${{ github.repository }} --since-commit HEAD~1 --json
-
-    - name: Handle TruffleHog Findings
-      run: |
-        if steps.trufflehog-scan.outcome == 'success' && steps.trufflehog-scan.outputs.report != '[]'; then
-          echo "::error:: TruffleHog found potential secrets! Please review the output for details."
-          echo "${{ steps.trufflehog-scan.outputs.report }}"
-          exit 1
-        fi
-        echo "TruffleHog scan completed. No secrets found."
-
-    - name: Upload TruffleHog Report as Artifact (Optional)
-      uses: actions/upload-artifact@v4
-      if: steps.trufflehog-scan.outcome == 'success' && steps.trufflehog-scan.outputs.report != '[]'
+    - name: Secret Scanning
+      uses: trufflesecurity/trufflehog@main
       with:
-        name: trufflehog-report
-        path: ${{ steps.trufflehog-scan.outputs.report_path }}
+        extra_args: --results=verified,unknown
+
+    # - name: Install TruffleHog
+    #   run: |
+    #     pip install trufflehog
+
+    # - name: Scan for secrets with TruffleHog
+    #   id: trufflehog-scan
+    #   run: trufflehog github ${{ github.repository }} --since-commit HEAD~1 --json
+
+    # - name: Handle TruffleHog Findings
+    #   run: |
+    #     if steps.trufflehog-scan.outcome == 'success' && steps.trufflehog-scan.outputs.report != '[]'; then
+    #       echo "::error:: TruffleHog found potential secrets! Please review the output for details."
+    #       echo "${{ steps.trufflehog-scan.outputs.report }}"
+    #       exit 1
+    #     fi
+    #     echo "TruffleHog scan completed. No secrets found."
+
+    # - name: Upload TruffleHog Report as Artifact (Optional)
+    #   uses: actions/upload-artifact@v4
+    #   if: steps.trufflehog-scan.outcome == 'success' && steps.trufflehog-scan.outputs.report != '[]'
+    #   with:
+    #     name: trufflehog-report
+    #     path: ${{ steps.trufflehog-scan.outputs.report_path }}
