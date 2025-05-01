@@ -15,6 +15,8 @@ const secrets_key="secretpassword"
 
 gcp-secret-key="secrure@12"
 
+gcp-secret-key="secrure@13"
+
 'use strict';
 const express = require('express');
 
