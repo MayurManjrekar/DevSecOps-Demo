@@ -1,7 +1,8 @@
-[paths]
-  exclude = [
-    ".gitleaks.toml"
-  ]
+[allowlist]
+  description = "Allowlisted files"
+  [[allowlist.files]]
+    path = ".gitleaks.toml"
+
 
 [[rules]]
   id = "gcp-secret-key-direct"
