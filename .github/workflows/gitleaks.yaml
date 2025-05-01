@@ -28,6 +28,18 @@ jobs:
       with:
         node-version: 'lts/*'
 
+    - name: Install gitleaks
+      run: sudo apt install -y gitleaks
+
+    - name: Run Gitleaks on aap.js
+      run: gitleaks detect --source=. --no-git --verbose --exit-code 1 --report-path gitleaks-report.json
+
+    - name: Upload Gitleaks Report as Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: gitleaks-report
+        path: bookshelf/result.sarif
+
     # - name: Install Gitleaks 
     #   run: |
     #       GITLEAKS_VERSION="8.18.2"
@@ -35,12 +47,6 @@ jobs:
     #       tar -xzf gitleaks.tar.gz gitleaks
     #       chmod +x gitleaks
     #       sudo mv gitleaks /usr/local/bin/
-
-    - name: Install gitleaks
-      run: sudo apt install -y gitleaks
-
-    - name: Run Gitleaks on aap.js
-      run: gitleaks detect --log-opts="-n 1" --verbose --exit-code 1 --report-path gitleaks-report.json
 
     # - name: Install gitleaks
     #   run: sudo apt install -y gitleaks
@@ -52,9 +58,3 @@ jobs:
     # - name: Run Gitleaks
     #   uses: gitleaks/gitleaks-action@v2.3.9
     #   continue-on-error: true
-
-    - name: Upload Gitleaks Report as Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: gitleaks-report
-        path: bookshelf/result.sarif
