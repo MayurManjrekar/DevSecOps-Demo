@@ -35,11 +35,11 @@ jobs:
     - name: Lint with ESLint
       run: npx eslint . --output-file eslint_report.txt --format stylish
 
-    - name: Upload ESLint Report as Artifact
-      uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@main
+      name: Uploading code Artifact
       with:
         name: eslint-report
-        path: eslint_report.txt
+        path: ./bookshelf/*
 
     # - name: Security Scan (npm audit)
     #   run: npm audit --audit-level=high
