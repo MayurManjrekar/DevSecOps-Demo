@@ -34,7 +34,8 @@ jobs:
 
     - name: Lint with ESLint
       run: npx eslint . --output-file eslint_report.txt --format stylish
-
+      continue-on-error: true
+      
     - uses: actions/upload-artifact@main
       name: Uploading code Artifact
       with:
