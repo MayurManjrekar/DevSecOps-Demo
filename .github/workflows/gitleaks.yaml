@@ -10,7 +10,7 @@ on:
 
 jobs:
   Secrets-check:
-    name: Secret Check
+    name: Secret Check 
     runs-on: ubuntu-latest
     defaults:
       run:
