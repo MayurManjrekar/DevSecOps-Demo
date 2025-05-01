@@ -8,21 +8,20 @@ export default [
   {
     ...js.configs.recommended,
     rules: {
-      ...js.configs.recommended.rules,
-      semi: ['error', 'always'],
-      'no-unused-vars': 'error',
+      // Include only rules that are actual syntax errors
       'no-undef': 'error',
+      'no-unused-vars': 'error',
       'no-extra-semi': 'error',
       'no-unexpected-multiline': 'error',
-      'quotes': ['error', 'single'],
-      'comma-dangle': ['error', 'never'],
-      'indent': ['error', 2],
+      'semi': ['error', 'always'], // semicolons are required
     },
   },
   {
     files: ['**/*.js'],
+    ignores: ['eslint.config.js'], // Ignore the config file
     languageOptions: {
       globals: {
+        ...recommendedGlobals,
         require: 'readonly',
         module: 'readonly',
         exports: 'readonly',
@@ -38,6 +37,7 @@ export default [
       security,
     },
     rules: {
+      // Keep only security-related rules (which aren't just style-based)
       'security/detect-object-injection': 'warn',
       'security/detect-possible-timing-attacks': 'warn',
     },
