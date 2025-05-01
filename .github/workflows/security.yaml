@@ -29,6 +29,9 @@ jobs:
     - name: Install dependencies
       run: npm install
 
+    - name: Update ESLint
+      run: npm update eslint
+
     - name: Lint with ESLint
       run: npx eslint . --output-file eslint_report.txt --format github
 
