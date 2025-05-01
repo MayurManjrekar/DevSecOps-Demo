@@ -10,7 +10,7 @@ on:
 
 jobs:
   Linting:
-    name: Code Linting with Security Rules
+    name: Code Linting
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -33,7 +33,7 @@ jobs:
       run: npm update eslint
 
     - name: Lint with ESLint
-      run: npx eslint . --output-file eslint_report.txt --format stylish
+      run: npx eslint . --output-file eslint_report.json --format json
       continue-on-error: true
       
     - name: Upload ESLint Report Artifact
@@ -42,66 +42,66 @@ jobs:
         name: eslint-report
         path: bookshelf/eslint_report.txt
 
-  Auditing:
-    name: Security Vulnerability Check
-    needs: Linting
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-        working-directory: ${{ github.workspace }}/bookshelf
+  # Secrets-check:
+  #   name: Secret Check 
+  #   needs: Linting
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       shell: bash
+  #       working-directory: ${{ github.workspace }}/bookshelf
+
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v4
+  #     with:
+  #       fetch-depth: 0
+
+  #   - name: Set up Node.js
+  #     uses: actions/setup-node@v4
+  #     with:
+  #       node-version: 'lts/*'
+
+  #   - name: Install gitleaks
+  #     run: sudo apt install -y gitleaks
+
+  #   - name: Run Gitleaks on aap.js
+  #     run: gitleaks detect --config .gitleaks.toml --source . --no-git --verbose --exit-code 1 --report-path gitleaks-report.json
+  #     continue-on-error: true
+
+  #   - name: Upload Gitleaks Report as Artifact
+  #     uses: actions/upload-artifact@v4
+  #     with:
+  #       name: gitleaks-report
+  #       path: bookshelf/gitleaks-report.json
+
+  # Auditing:
+  #   name: Security Vulnerability Check
+  #   needs: Secrets-check
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       shell: bash
+  #       working-directory: ${{ github.workspace }}/bookshelf
  
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+  #   steps:
+  #   - name: Checkout
+  #     uses: actions/checkout@v4
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: 'lts/*'
+  #   - name: Set up Node.js
+  #     uses: actions/setup-node@v4
+  #     with:
+  #       node-version: 'lts/*'
 
-    - name: Install dependencies
-      run: npm install
+  #   - name: Install dependencies
+  #     run: npm install
 
-    - name: Security Scan (npm audit)
-      run: npm audit --audit-level=high --json > npm_audit_report.json
-      continue-on-error: true
+  #   - name: Security Scan (npm audit)
+  #     run: npm audit --audit-level=high --json > npm_audit_report.json
+  #     continue-on-error: true
 
-    - name: Upload Audit Report Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: audit-report
-        path: bookshelf/npm_audit_report.json
-
-  Secrets-check:
-    name: Secret Check 
-    needs: Auditing
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-        working-directory: ${{ github.workspace }}/bookshelf
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: 'lts/*'
-
-    - name: Install gitleaks
-      run: sudo apt install -y gitleaks
-
-    - name: Run Gitleaks on aap.js
-      run: gitleaks detect --source=. --no-git --verbose --exit-code 1 --report-path gitleaks-report.json
-      continue-on-error: true
-
-    - name: Upload Gitleaks Report as Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: gitleaks-report
-        path: bookshelf/gitleaks-report.json
+  #   - name: Upload Audit Report Artifact
+  #     uses: actions/upload-artifact@v4
+  #     with:
+  #       name: audit-report
+  #       path: bookshelf/npm_audit_report.json

@@ -19,7 +19,7 @@ gcp-secret-key="secrure@12"
 
 gcp-secret-key="secrure@13"
 
-'use strict';
+'use strict'
 const express = require('express');
 
 const app = express();
