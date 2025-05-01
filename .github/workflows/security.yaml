@@ -75,6 +75,7 @@ jobs:
 
   Secrets-check:
     name: Secret Check 
+    needs: Auditing
     runs-on: ubuntu-latest
     defaults:
       run:
