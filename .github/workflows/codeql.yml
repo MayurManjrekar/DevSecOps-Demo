@@ -3,6 +3,10 @@ name: "CodeQL Advanced Code Check"
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - bookshelf/**
+      - .github/workflows/codeql.yaml
+      
   pull_request:
     branches: [ "main" ]
   schedule:
