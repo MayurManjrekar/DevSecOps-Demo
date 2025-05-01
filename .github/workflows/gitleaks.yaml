@@ -28,12 +28,12 @@ jobs:
       with:
         node-version: 'lts/*'
 
-    - name: Run Gitleaks
-      uses: gitleaks/gitleaks-action@v2
+    - name: Gitleaks
+      uses: gitleaks/gitleaks-action@v2.3.9
       # Configure Gitleaks to output a JSON report
       with:
         args: --verbose --report-format json --report-path gitleaks-report.json
-        
+
     - name: Upload Gitleaks Report as Artifact
       uses: actions/upload-artifact@v4
       with:
