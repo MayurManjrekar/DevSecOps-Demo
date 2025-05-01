@@ -8,7 +8,7 @@ on:
       - bookshelf/**
       - .github/workflows/gitleaks.yaml
 
-jobs:
+jobs: 
   Secrets-check:
     name: Secret Check 
     runs-on: ubuntu-latest
