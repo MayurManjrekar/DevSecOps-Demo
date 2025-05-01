@@ -9,14 +9,20 @@ export default [
     ...js.configs.recommended,
     rules: {
       ...js.configs.recommended.rules,
-      semi: ['error', 'always'], // Enforce semicolons as errors
+      semi: ['error', 'always'],
+      'no-unused-vars': 'error',
+      'no-undef': 'error',
+      'no-extra-semi': 'error',
+      'no-unexpected-multiline': 'error',
+      'quotes': ['error', 'single'],
+      'comma-dangle': ['error', 'never'],
+      'indent': ['error', 2],
     },
   },
   {
     files: ['**/*.js'],
     languageOptions: {
       globals: {
-        ...recommendedGlobals,
         require: 'readonly',
         module: 'readonly',
         exports: 'readonly',
@@ -34,7 +40,6 @@ export default [
     rules: {
       'security/detect-object-injection': 'warn',
       'security/detect-possible-timing-attacks': 'warn',
-      'no-undef': 'error',
     },
   },
 ];
