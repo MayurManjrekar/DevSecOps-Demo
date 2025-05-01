@@ -33,7 +33,7 @@ jobs:
       run: npm update eslint
 
     - name: Lint with ESLint
-      run: npx eslint . --output-file eslint_report.txt --format github
+      run: npx eslint . --output-file eslint_report.txt --format stylish
 
     - name: Upload ESLint Report as Artifact
       uses: actions/upload-artifact@v4
