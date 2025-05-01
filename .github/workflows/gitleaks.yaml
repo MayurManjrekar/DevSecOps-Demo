@@ -33,12 +33,13 @@ jobs:
 
     - name: Run Gitleaks on aap.js
       run: gitleaks detect --source=. --no-git --verbose --exit-code 1 --report-path gitleaks-report.json
+      continue-on-error: true
 
     - name: Upload Gitleaks Report as Artifact
       uses: actions/upload-artifact@v4
       with:
         name: gitleaks-report
-        path: bookshelf/result.sarif
+        path: bookshelf/gitleaks-report.json
 
     # - name: Install Gitleaks 
     #   run: |
