@@ -31,7 +31,8 @@ jobs:
     - name: Run Gitleaks
       uses: gitleaks/gitleaks-action@v2.3.9
       with:
-        scan_options: --find-files
+        args: --verbose --report-format sarif .
+
 
     - name: Upload Gitleaks Report as Artifact
       uses: actions/upload-artifact@v4
