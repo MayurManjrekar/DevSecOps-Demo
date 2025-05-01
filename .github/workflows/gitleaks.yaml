@@ -28,8 +28,10 @@ jobs:
       with:
         node-version: 'lts/*'
 
-    - name: Gitleaks
+    - name: Run Gitleaks
       uses: gitleaks/gitleaks-action@v2.3.9
+      with:
+        scan_options: --find-files
 
     - name: Upload Gitleaks Report as Artifact
       uses: actions/upload-artifact@v4
