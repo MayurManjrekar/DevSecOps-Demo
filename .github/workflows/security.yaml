@@ -33,14 +33,14 @@ jobs:
     #   run: npm update eslint
 
     - name: Lint with ESLint
-      run: npx eslint . --output-file eslint_report.json --format json
+      run: npx eslint . --output-file eslint_report.txt --format table
       continue-on-error: true
       
     - name: Upload ESLint Report Artifact
       uses: actions/upload-artifact@v4
       with:
         name: eslint-report
-        path: bookshelf/eslint_report.json
+        path: bookshelf/eslint_report.txt
 
   # Secrets-check:
   #   name: Secret Check 
