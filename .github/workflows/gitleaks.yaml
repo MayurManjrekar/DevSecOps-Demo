@@ -30,9 +30,11 @@ jobs:
 
     - name: Install Gitleaks
       run: |
-        curl -sSL https://github.com/gitleaks/gitleaks/releases/latest/download/gitleaks-linux-amd64 -o gitleaks
-        chmod +x gitleaks
-        sudo mv gitleaks /usr/local/bin/
+          GITLEAKS_VERSION="8.18.2"
+          curl -sSL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" -o gitleaks.tar.gz
+          tar -xzf gitleaks.tar.gz gitleaks
+          chmod +x gitleaks
+          sudo mv gitleaks /usr/local/bin/
 
     - name: Run Gitleaks on aap.js
       run: gitleaks detect --source=aap.js --no-git --verbose --exit-code 1
