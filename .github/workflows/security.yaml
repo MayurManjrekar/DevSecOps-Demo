@@ -41,6 +41,10 @@ jobs:
       with:
         name: eslint-report
         path: eslint_report.txt
+        if-no-files-found: warn
+        compression-level: 6
+        overwrite: false
+        include-hidden-files: false
 
     # - name: Security Scan (npm audit)
     #   run: npm audit --audit-level=high
