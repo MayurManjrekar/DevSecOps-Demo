@@ -10,9 +10,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 
-secret="password128"
-gcp-secret-key-password="kadbPassword"
-API_KEY="makdsi@"
 'use strict';
 const express = require('express');
 
