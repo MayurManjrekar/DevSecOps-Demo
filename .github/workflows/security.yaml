@@ -2,7 +2,7 @@ name: Security Checks
 on:
   workflow_dispatch:
   push:
-    branches: 
+    branches:
       - main
     paths:
       - bookshelf/**
@@ -18,7 +18,6 @@ jobs:
         working-directory: ${{ github.workspace }}/bookshelf
 
     steps:
-
     - name: Checkout
       uses: actions/checkout@v4
 
@@ -31,35 +30,41 @@ jobs:
       run: npm install
 
     - name: Lint with ESLint
-      run: npx eslint .
+      run: npx eslint . --output-file eslint_report.txt --format github
+
+    - name: Upload ESLint Report as Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: eslint-report
+        path: eslint_report.txt
 
     # - name: Security Scan (npm audit)
     #   run: npm audit --audit-level=high
 
 
-  Secrets-check:
-    name: Secret Check
-    needs: Linting
-    runs-on: ubuntu-latest
-    permissions:
-      security-events: write
-      actions: read 
-    defaults:
-      run:
-        shell: bash
-        working-directory: ${{ github.workspace }}/bookshelf
+  # Secrets-check:
+  #   name: Secret Check
+  #   needs: Linting
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     security-events: write
+  #     actions: read 
+  #   defaults:
+  #     run:
+  #       shell: bash
+  #       working-directory: ${{ github.workspace }}/bookshelf
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v4
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: 'lts/*'
+  #   - name: Set up Node.js
+  #     uses: actions/setup-node@v4
+  #     with:
+  #       node-version: 'lts/*'
 
-    - name: Install gitleaks 
-      run: sudo apt install gitleaks
+  #   - name: Install gitleaks 
+  #     run: sudo apt install gitleaks
 
 
     # - name: Checkout code
