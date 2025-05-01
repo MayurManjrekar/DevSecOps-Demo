@@ -2,7 +2,7 @@
 Repository for testing & validating DevSecOps implementation 
 
 ## Assignment 1: Implementing Shift Left Security in CI/CD Pipeline
-
+  
 ### Objective: 
 Implement security checks early in the development process by integrating them into your CI/CD pipeline using GitHub Actions or GitLab CI.
 
