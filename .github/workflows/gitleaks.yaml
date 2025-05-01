@@ -28,16 +28,19 @@ jobs:
       with:
         node-version: 'lts/*'
 
-    - name: Install Gitleaks 
-      run: |
-          GITLEAKS_VERSION="8.18.2"
-          curl -sSL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" -o gitleaks.tar.gz
-          tar -xzf gitleaks.tar.gz gitleaks
-          chmod +x gitleaks
-          sudo mv gitleaks /usr/local/bin/
+    # - name: Install Gitleaks 
+    #   run: |
+    #       GITLEAKS_VERSION="8.18.2"
+    #       curl -sSL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" -o gitleaks.tar.gz
+    #       tar -xzf gitleaks.tar.gz gitleaks
+    #       chmod +x gitleaks
+    #       sudo mv gitleaks /usr/local/bin/
+
+    - name: Install gitleaks
+      run: sudo apt install -y gitleaks
 
     - name: Run Gitleaks on aap.js
-      run: gitleaks detect --log-opts="-n 1" --verbose --exit-code 1
+      run: gitleaks detect --log-opts="-n 1" --verbose --exit-code 1 --report-path gitleaks-report.json
 
     # - name: Install gitleaks
     #   run: sudo apt install -y gitleaks
