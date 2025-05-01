@@ -10,14 +10,14 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 
-const secrets_key="secretpassword"
-api_key="secure-api-key"
+const secrets_key = "secretpassword"
+// api_key="secure-api-key"
 
-API_KEY="mKh@198hh"
+// API_KEY="mKh@198hh"
 
-gcp-secret-key="secrure@12"
+// gcp-secret-key="secrure@12"
 
-gcp-secret-key="secrure@13"
+// gcp-secret-key="secrure@13"
 
 'use strict';
 const express = require('express');
