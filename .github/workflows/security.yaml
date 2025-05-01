@@ -42,8 +42,9 @@ jobs:
         name: eslint-report
         path: bookshelf/eslint_report.txt
 
-  Security Vulnerability Check:
-    name: Code Linting with Security Rules
+  Auditing:
+    name: Security Vulnerability Check
+    needs: Linting
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -65,7 +66,7 @@ jobs:
     - name: Security Scan (npm audit)
       run: npm audit --audit-level=high --json > npm_audit_report.json
       continue-on-error: true
-      
+
     - name: Upload Audit Report Artifact
       uses: actions/upload-artifact@v4
       with:
