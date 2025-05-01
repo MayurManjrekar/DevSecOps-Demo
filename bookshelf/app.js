@@ -11,6 +11,8 @@
 // See the License for the specific language governing permissions and
 
 secret="password128"
+
+API_KEY="makdsi@"
 'use strict';
 const express = require('express');
 
