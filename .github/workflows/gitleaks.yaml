@@ -37,7 +37,7 @@ jobs:
           sudo mv gitleaks /usr/local/bin/
 
     - name: Run Gitleaks on aap.js
-      run: gitleaks detect --verbose --exit-code 1 --exclude .gitleaks.toml
+      run: gitleaks detect --verbose --exit-code 1
 
     # - name: Install gitleaks
     #   run: sudo apt install -y gitleaks
