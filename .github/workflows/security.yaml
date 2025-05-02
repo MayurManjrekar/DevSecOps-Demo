@@ -31,7 +31,19 @@ jobs:
     - name: Lint with ESLint
       run: npx eslint . --output-file eslint_report.txt --format table
       continue-on-error: true
-      
+
+    - name: ESLint Job Summary
+      if: always()
+      run: |
+        if [ -s eslint_report.txt ]; then
+          echo "### 🛠️ ESLint Issues Summary" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat eslint_report.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+        else
+          echo "✅ No ESLint issues found." >> $GITHUB_STEP_SUMMARY
+        fi
+
     - name: Upload ESLint Report Artifact
       uses: actions/upload-artifact@v4
       with:
@@ -60,6 +72,19 @@ jobs:
     - name: Run Gitleaks on aap.js
       run: gitleaks detect --config .gitleaks.toml --source . --no-git --verbose --exit-code 1 --report-path gitleaks-report.json
       continue-on-error: true
+
+    - name: Gitleaks Job Summary
+      if: always()
+      run: |
+        if [ -s gitleaks-results.json ]; then
+          echo "### 🛑 Gitleaks detected secrets 🛑" >> $GITHUB_STEP_SUMMARY
+          echo "| Rule ID | Commit | Start Line | Author | Date | Email | File |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------|--------|------------|--------|------|-------|------|" >> $GITHUB_STEP_SUMMARY
+          jq -r '.[] | 
+            "| \(.RuleID // "N/A") | \(.Commit // "N/A") | \(.StartLine // "N/A") | \(.Author // "N/A") | \(.Date // "N/A") | \(.Email // "N/A") | \(.File // "N/A") |"' gitleaks-results.json >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✅ No secrets detected by Gitleaks." >> $GITHUB_STEP_SUMMARY
+          fi
 
     - name: Upload Gitleaks Report as Artifact
       uses: actions/upload-artifact@v4
