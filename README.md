@@ -53,3 +53,45 @@ I selected these tools based on several practical and strategic considerations:
 
 
 ## Assignment 2: Enable GHAS for a repository
+
+### Objective:
+GitHub Advanced Security features for a repository.
+
+### Pipelines:
+| CodeQL Scan for Bookshelf Application (Nodejs) & GitHub Actions workflow|
+| --------------- |
+|[![CodeQL Advanced Code Check](https://github.com/MayurManjrekar/DevSecOps-Demo/actions/workflows/codeql.yml/badge.svg)](https://github.com/MayurManjrekar/DevSecOps-Demo/actions/workflows/codeql.yml) |
+
+### What the Pipeline Does
+Runs advanced CodeQL analysis weekly and on code changes to detect vulnerabilities in JavaScript/TypeScript and GitHub Actions code.
+
+### Triggers
+This workflow is triggered under the following conditions:
+* Push to main branch
+  - The `bookshelf/` directory
+  - workflow file itself `.github/workflows/codeql.yaml`
+* Pull request targeting main branch
+* Scheduled run every Monday at 00:19 UTC
+
+### Security Analysis and Tools Used
+
+| Security Check        | Tool | Description|
+|-----------------------|------|------------|
+| Documentation/Process | Policy | A file `(SECURITY.md)` that outlines how users and contributors should report vulnerabilities. It helps standardize and communicate your project's vulnerability disclosure process. |
+| Manual Vulnerability Disclosure & Fix Tracking | Security Advisory | Lets maintainers privately disclose, discuss, and patch vulnerabilities in their repositories. Once resolved, advisories can be published as CVEs for public awareness and tracking. |
+| Dependency Vulnerability Detection | Dependabot Alerts | Scans the dependency graph of your project against GitHub’s advisory database and alerts you when known vulnerabilities are found in third-party packages. |
+| Static Application Security Testing (SAST) | Code Scanning Alerts | Automatically analyzes source code for vulnerabilities and coding errors using CodeQL or third-party tools. Highlights issues like injection flaws, logic errors, and unsafe API usage. |
+| Credential & Token Leakage Detection | Type of Check | Detects accidentally committed secrets such as API keys, tokens, or passwords in your Git history or current code and alerts repository maintainers to prevent misuse. |
+
+### Code Scanning Security Report
+| Security Check |Vulnerability Description | Severity | Recommended Mitigation Strategy |
+|----------------|---------------------------|----------|---------------------------------|
+| Code scanning  | Workflow does not contain permissions | Medium | The issue indicates that the GitHub Actions workflow has default (excessive) permissions, which violates the principle of least privilege. To resolve it we can add `permissions` block to our workflow to restrict access.|
+| Dependabot Alert | @google-cloud/firestore Logging Issue | Moderate | The alert warns that older versions of the @google-cloud/firestore library (before v6.1.0) & its code dependency. we can upgrade the dependency within `package.json` |
+
+
+* Permission block added to the workflow 
+```
+permissions:
+  contents: read
+```
