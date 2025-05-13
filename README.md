@@ -207,6 +207,34 @@ test {
     useJUnitPlatform()
 }
 ```
+#### Test Case file 
+* `test/app.test.js`
+```
+const app = require('../app');
+
+const request = require('supertest');
+
+describe('Requests have valid status codes', () => {
+  it('should get 302', (done) => {
+    request(app).get('/').expect(302, done);
+  }),
+    it('should get books', (done) => {
+      request(app).get('/books').expect(200, done);
+    });
+  it('should get books/add form', (done) => {
+    request(app).get('/books/add').expect(200, done);
+  });
+});
+
+describe('Should have logs and errors endpoints as described in docs for Stackdriver', () => {
+  it('should have logs endpoints', (done) => {
+    request(app).get('/logs').expect(200, done);
+  }),
+    it('should have errors endpoint', (done) => {
+      request(app).get('/errors').expect(500, done);
+    });
+});
+```
 
 ### Step 5: Set Up SonarQube Authentication Token
 * Generate Token:
@@ -217,11 +245,12 @@ export SONAR_TOKEN="<your_generated_token>"
 ```
 
 ### Step 6: Run SonarQube Analysis
-* From your project directory, run:
+* Generates test and coverage reports 
 ```
-./gradlew build sonarqube
+npm run test -- --coverage
 ```
-or
+
+* From your project directory, run:  Builds the app and uploads analysis + coverage to SonarQube
 ```
 gradle build sonarqube
 ```
@@ -235,6 +264,19 @@ gradle build sonarqube
 
 
 ### Report
+
+#### Summary
+
+| Metric                | Description   |  Status          |
+| --------------------- | ------------- | ---------------- |
+| **Security**          | Checks for known vulnerabilities and insecure code | A (0 issues)       |
+| **Reliability**       | Detects bugs and runtime failure risks             | A (0 issues)       |
+| **Maintainability**   | Detects code smells affecting maintainability      | A (2 issues)       |
+| **Coverage**          | Shows how much of the code is covered by tests     | 35.7% (109 lines) |
+| **Duplications**      | Highlights repeated code                           | 0.0%               |
+| **Security Hotspots** | Sensitive code that may need manual review         | 0 hotspots         |
+| **Accepted Issues**   | Valid issues intentionally left unresolved         | 0 accepted         |
+
 
 #### SonarQube UI
 ![SonarQube UI](Images/Sonarqube-ui.png)
