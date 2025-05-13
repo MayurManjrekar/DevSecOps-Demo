@@ -113,7 +113,6 @@ SonarQube is an open-source platform for continuous inspection of code quality. 
 Generates detailed reports on code quality and security issues. Displays quality gates for each project (e.g., whether your code meets the defined quality standards).
 
 
-
 ### Prerequisites
 * Docker
 * Java JDK (>=11)
@@ -220,18 +219,17 @@ export SONAR_TOKEN="<your_generated_token>"
 ### Step 6: Run SonarQube Analysis
 * From your project directory, run:
 ```
-./gradlew clean build sonarqube
+./gradlew build sonarqube
 ```
 or
 ```
-gradle clean build sonarqube
+gradle build sonarqube
 ```
 
 ##### Gradle Command: `gradle clean build sonarqube`
 
 | Command Part         | Description    | Purpose   |
 |----------------------|----------------|-----------|
-| `clean`    | Deletes the `build/` directory and all previous build artifacts         | Ensures a clean environment before a new build   |
 | `build`    | Compiles the source code, runs unit tests, and creates output artifacts | Validates that the code builds correctly and tests pass    |
 | `sonarqube`| Analyzes code quality and uploads results to the SonarQube server       | Identifies bugs, code smells, and vulnerabilities in your codebase   |
 
@@ -251,3 +249,4 @@ gradle clean build sonarqube
 ### Reference
 * [Download Docker](https://docs.docker.com/desktop/setup/install/mac-install/)
 * [Sonar analysis Meduim Post](https://allancarneirosantos.medium.com/how-to-get-full-sonar-analysis-from-local-code-8284a883149e)
+* [SonarQube commands](https://docs.gradle.org/8.14/userguide/command_line_interface.html#sec:command_line_warnings)

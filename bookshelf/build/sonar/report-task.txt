@@ -2,5 +2,5 @@ projectKey=bookshelf-app
 serverUrl=http://localhost:9000
 serverVersion=25.5.0.107428
 dashboardUrl=http://localhost:9000/dashboard?id=bookshelf-app
-ceTaskId=8cc7b690-3858-4eea-beea-54fee01af25f
-ceTaskUrl=http://localhost:9000/api/ce/task?id=8cc7b690-3858-4eea-beea-54fee01af25f
+ceTaskId=781f406e-7f04-471f-add3-2850d374b327
+ceTaskUrl=http://localhost:9000/api/ce/task?id=781f406e-7f04-471f-add3-2850d374b327
