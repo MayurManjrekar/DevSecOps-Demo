@@ -95,3 +95,159 @@ This workflow is triggered under the following conditions:
 permissions:
   contents: read
 ```
+
+
+## Assignment 4: Using SonarQube for SAST capabilities
+
+### Objective: 
+Integrate SonarQube and upload the reports.
+
+### What is SonarQube? 
+SonarQube is an open-source platform for continuous inspection of code quality. It provides static analysis of your code to identify potential issues, such as:
+* Bugs 
+* Vulnerabilities 
+* Code Smells (bad practices or poor maintainability)
+* Duplications 
+
+**Metrics & Reports:**
+Generates detailed reports on code quality and security issues. Displays quality gates for each project (e.g., whether your code meets the defined quality standards).
+
+
+
+### Prerequisites
+* Docker
+* Java JDK (>=11)
+* Gradle (>=8.x)
+* VS Code or preferred IDE
+
+### Step 1: Install & Run Docker
+* Install Docker Desktop
+* Download and [install Docker](https://docs.docker.com/desktop/setup/install/mac-install/)
+
+### Step 2: Run SonarQube in Docker
+* Open a terminal and run the following command:
+```
+docker pull sonarqube
+docker run --name sonarqube-custom -p 9000:9000 sonarqube
+```
+* Access SonarQube, Open your browser and visit:
+```
+http://localhost:9000
+```
+
+* Login (First time only):
+```
+Username: admin
+Password: admin
+```
+
+* Change the password.
+
+
+### Step 3: Installing Dependencies
+* Install Homebrew
+```
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+eval "$(/opt/homebrew/bin/brew shellenv)"
+```
+
+* Install Java:
+```
+brew install openjdk@17
+export JAVA_HOME="/opt/homebrew/opt/openjdk@17"
+export PATH="$JAVA_HOME/bin:$PATH"
+```
+
+* Install Gradle:
+```
+brew install gradle
+```
+
+* Install Node.js and npm
+```
+brew install node
+```
+
+
+### Step 4: Create build.gradle for Your Project
+* In your project directory, create a build.gradle file with the following content:
+```
+plugins {
+    id 'org.sonarqube' version '3.3'
+    id 'java' // If you have Java code in the project as well
+}
+
+repositories {
+    mavenCentral()  // This ensures Gradle can download dependencies from Maven Central
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "bookshelf-app"
+        property "sonar.organization", "DevSecOps-Demo"
+        property "sonar.host.url", "http://localhost:9000"
+        property "sonar.token", project.findProperty("sonar.token") ?: System.getenv("SONAR_TOKEN")
+
+        // Specify the source directories for JavaScript
+        property "sonar.sources", "books, lib"  // Include the JS code directories
+        property "sonar.tests", "test"  // Your test directory
+
+        // coverage report path
+        property "sonar.javascript.lcov.reportPaths", "build/reports/tests/lcov.info"
+    }
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.3' // Keep it if you're using JUnit for other tests
+
+    // You may add additional dependencies related to JS testing frameworks if required
+}
+
+test {
+    useJUnitPlatform()
+}
+```
+
+### Step 5: Set Up SonarQube Authentication Token
+* Generate Token:
+* In SonarQube UI: Go to My Account > Security > Generate Token.
+* Set SONAR_TOKEN Environment Variable:
+```
+export SONAR_TOKEN="<your_generated_token>"
+```
+
+### Step 6: Run SonarQube Analysis
+* From your project directory, run:
+```
+./gradlew clean build sonarqube
+```
+or
+```
+gradle clean build sonarqube
+```
+
+##### Gradle Command: `gradle clean build sonarqube`
+
+| Command Part         | Description    | Purpose   |
+|----------------------|----------------|-----------|
+| `clean`    | Deletes the `build/` directory and all previous build artifacts         | Ensures a clean environment before a new build   |
+| `build`    | Compiles the source code, runs unit tests, and creates output artifacts | Validates that the code builds correctly and tests pass    |
+| `sonarqube`| Analyzes code quality and uploads results to the SonarQube server       | Identifies bugs, code smells, and vulnerabilities in your codebase   |
+
+
+### Report
+
+#### SonarQube UI
+![SonarQube UI](Images/Sonarqube-ui.png)
+
+#### SonarQube Report
+![Sonarqube-report](Images/Sonarqube-report.png)
+
+#### Dectected Issues
+![Sonarqube Vulnerability](Images/Sonarqube-vulnerability-report.png)
+![Issue Description](Images/Report-description.png)
+
+### Reference
+* [Download Docker](https://docs.docker.com/desktop/setup/install/mac-install/)
+* [Sonar analysis Meduim Post](https://allancarneirosantos.medium.com/how-to-get-full-sonar-analysis-from-local-code-8284a883149e)

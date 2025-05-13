@@ -1,0 +1,34 @@
+plugins {
+    id 'org.sonarqube' version '3.3'
+    id 'java' // If you have Java code in the project as well
+}
+
+repositories {
+    mavenCentral()  // This ensures Gradle can download dependencies from Maven Central
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "bookshelf-app"
+        property "sonar.organization", "DevSecOps-Demo"
+        property "sonar.host.url", "http://localhost:9000"
+        property "sonar.token", project.findProperty("sonar.token") ?: System.getenv("SONAR_TOKEN")
+
+        // Specify the source directories for JavaScript
+        property "sonar.sources", "books, lib"  // Include the JS code directories
+        property "sonar.tests", "test"  // Your test directory
+
+        // coverage report path
+        property "sonar.javascript.lcov.reportPaths", "build/reports/tests/lcov.info"
+    }
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.3' // Keep it if you're using JUnit for other tests
+
+    // You may add additional dependencies related to JS testing frameworks if required
+}
+
+test {
+    useJUnitPlatform()
+}

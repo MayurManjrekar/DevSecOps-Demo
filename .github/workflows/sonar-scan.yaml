@@ -28,20 +28,36 @@ jobs:
     # - name: Build with Maven
     #   run: mvn install -f MyWebApp/pom.xml
 
-    - name: SonarQube Scan
-      uses: sonarsource/sonarqube-scan-action@master
+    # - name: SonarQube Scan
+    #   uses: sonarsource/sonarqube-scan-action@master
+    #   with:
+    #     projectBaseDir: .
+    #     args: >
+    #       -Dsonar.organization=DevSecOps-Demo
+    #       -Dsonar.projectKey=Bookshelf-App
+    #   env:
+    #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    #     SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+    # - name: SonarQube Quality Gate check
+    #   id: sonarqube-quality-gate-check
+    #   uses: sonarsource/sonarqube-quality-gate-action@master
+
+    - name: Cache Gradle dependencies
+      uses: actions/cache@v2
       with:
-        projectBaseDir: .
-        args: >
-          -Dsonar.organization=DevSecOps-Demo
-          -Dsonar.projectKey=Bookshelf-App
+        path: ~/.gradle/caches
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+
+    - name: Build with Gradle
+      run: ./gradlew build
+
+    - name: SonarCloud Scan
+      run: ./gradlew sonarqube
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-
-    - name: SonarQube Quality Gate check
-      id: sonarqube-quality-gate-check
-      uses: sonarsource/sonarqube-quality-gate-action@master
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
