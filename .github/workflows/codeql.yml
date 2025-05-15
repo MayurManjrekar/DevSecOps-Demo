@@ -1,4 +1,4 @@
-name: "CodeQL Advanced Code Check"
+name: "CodeQL Code Check"
 
 on:
   push:

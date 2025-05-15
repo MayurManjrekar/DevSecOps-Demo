@@ -113,6 +113,14 @@ SonarQube is an open-source platform for continuous inspection of code quality. 
 Generates detailed reports on code quality and security issues. Displays quality gates for each project (e.g., whether your code meets the defined quality standards).
 
 
+### What is Gradle?
+Gradle is a powerful open-source build automation tool used primarily for:
+* Compiling code
+* Running tests
+* Packaging applications
+* Managing dependencies
+* Running quality checks (like SonarQube analysis)
+
 ### Prerequisites
 * Docker
 * Java JDK (>=11)
