@@ -37,7 +37,7 @@ jobs:
           args: "--all-projects --exclude=build.gradle --json-file-output=./snyk-report.json"
 
       - name: Upload Snyk Report as Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: snyk-security-report
           path: ./bookshelf/snyk-report.json
