@@ -56,6 +56,9 @@ jobs:
         run: npm install -g snyk-to-sarif
 
       - name: Convert Snyk JSON to SARIF
+        run: npx snyk-to-sarif ./bookshelf/snyk.json -o ./bookshelf/snyk.sarif
+
+      - name: Convert Snyk JSON to SARIF
         run: snyk-to-sarif ./bookshelf/snyk.json -o ./bookshelf/snyk.sarif
 
       - run: |
