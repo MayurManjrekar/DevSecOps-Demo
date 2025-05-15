@@ -28,14 +28,21 @@ jobs:
 
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/node@master
-        continue-on-error: true
+        # continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           command: test
           # args: "--all-projects --exclude=build.gradle --sarif-file-output=snyk.sarif"
-          args: "--all-projects --exclude=build.gradle --json-file-output=./bookshelf/snyk-report.json"
-      
+          # args: "--all-projects --exclude=build.gradle --json-file-output=./bookshelf/snyk-report.json"
+          args: "--all-projects --exclude=build.gradle"
+          json: true
+
+      - run: |
+              ls -al  
+              cd bookshelf
+              ls -al  
+          
       - name: Run Snyk Monitor (Long-term Monitoring)
         uses: snyk/actions/node@master
         env:
@@ -48,7 +55,23 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: snyk-security-report
-          path: ./bookshelf/snyk-report.json
+          path: ./bookshelf/snyk.json
+
+      - uses: garethr/snyk-to-sarif@master
+      - uses: actions/upload-artifact@v2
+        with:
+          name: SARIF
+          path: ./bookshelf/snyk.sarif
+
+      - run: |
+              ls -al  
+              cd bookshelf
+              ls -al  
+          
+      - name: Upload the SARIF file
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: snyk.sarif
 
       # - run: |
       #         ls -al  
@@ -66,7 +89,7 @@ jobs:
       #        cd bookshelf
       #        ls -al  
 
-      - name: Publish Snyk Report to GitHub Security Dashboard
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: ./bookshelf/snyk-results.sarif
+      # - name: Publish Snyk Report to GitHub Security Dashboard
+      #   uses: github/codeql-action/upload-sarif@v3
+      #   with:
+      #     sarif_file: ./bookshelf/snyk-results.sarif
