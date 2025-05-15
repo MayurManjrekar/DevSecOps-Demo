@@ -34,4 +34,10 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           command: monitor
-          args: "--all-projects --exclude=build.gradle"
+          args: "--all-projects --exclude=build.gradle --sarif-file-output=snyk.sarif"
+
+      - name: Upload result to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: snyk.sarif
+
