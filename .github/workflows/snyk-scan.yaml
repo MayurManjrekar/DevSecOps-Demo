@@ -33,7 +33,8 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           command: test
-          args: "--all-projects --exclude=build.gradle --json-file-output=./bookshelf/snyk-report.json"
+          args: "--all-projects --exclude=build.gradle --sarif-file-output=snyk.sarif"
+          # args: "--all-projects --exclude=build.gradle --json-file-output=./bookshelf/snyk-report.json"
       
       - name: Run Snyk Monitor (Long-term Monitoring)
         uses: snyk/actions/node@master
@@ -47,25 +48,25 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: snyk-security-report
-          path: ./bookshelf/snyk-report.json
+          path: ./snyk.sarif
 
-      - run: |
-              ls -al  
-              cd bookshelf
-              ls -al  
+      # - run: |
+      #         ls -al  
+      #         cd bookshelf
+      #         ls -al  
 
-      - name: Install Snyk to SARIF Converter
-        run: npm install -g snyk-to-sarif
+      # - name: Install Snyk to SARIF Converter
+      #   run: npm install -g snyk-to-sarif
 
-      - name: Convert Snyk JSON to SARIF
-        run: snyk-to-sarif ./bookshelf/snyk-report.json -o ./bookshelf/snyk-results.sarif
+      # - name: Convert Snyk JSON to SARIF
+      #   run: snyk-to-sarif ./bookshelf/snyk-report.json -o ./bookshelf/snyk-results.sarif
 
-      - run: |
-             ls -al  
-             cd bookshelf
-             ls -al  
+      # - run: |
+      #        ls -al  
+      #        cd bookshelf
+      #        ls -al  
 
       - name: Publish Snyk Report to GitHub Security Dashboard
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: ./bookshelf/snyk-results.sarif
+          sarif_file: ./bookshelf/snyk.sarif
