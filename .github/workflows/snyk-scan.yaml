@@ -49,13 +49,15 @@ jobs:
           name: snyk-security-report
           path: ./bookshelf/snyk-report.json
 
+      - run: ls -al  
+
       - name: Install Snyk to SARIF Converter
         run: npm install -g snyk-to-sarif
 
       - name: Convert Snyk JSON to SARIF
         run: snyk-to-sarif ./bookshelf/snyk-report.json -o ./bookshelf/snyk-results.sarif
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      - run: ls -al  
 
       - name: Publish Snyk Report to GitHub Security Dashboard
         uses: github/codeql-action/upload-sarif@v3
