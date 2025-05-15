@@ -300,3 +300,107 @@ gradle build sonarqube
 * [Download Docker](https://docs.docker.com/desktop/setup/install/mac-install/)
 * [Sonar analysis Meduim Post](https://allancarneirosantos.medium.com/how-to-get-full-sonar-analysis-from-local-code-8284a883149e)
 * [SonarQube commands](https://docs.gradle.org/8.14/userguide/command_line_interface.html#sec:command_line_warnings)
+
+
+## Assignment 5: Integrating SCA in CI pipeline
+
+### Objective:
+Implement Software Composition Analysis (SCA) to identify and manage vulnerabilities in open-source components and report the findings.
+
+### What is Software Composition Analysis (SCA)?
+Software Composition Analysis (SCA) is a process of identifying and managing the open-source components and dependencies used in a software project. It helps understand the security, license, and quality risks associated with third-party software.
+Key Features of SCA:
+* Dependency Scanning:
+* Vulnerability Detection:
+* License Compliance: Checks for open-source license compliance to avoid legal risks.
+* Version Management: Alerts you to outdated or vulnerable versions of libraries.
+* Supply Chain Security: Detects malicious or compromised packages in your supply chain.
+
+### Pipelines:
+| CodeQL Scan for Bookshelf Application (Nodejs) & GitHub Actions workflow|
+| --------------- |
+| [![Snyk Open Source Security](https://github.com/ravisinghrajput95/easybuggy-vulnerable-application/actions/workflows/snyk-security.yml/badge.svg)](https://github.com/ravisinghrajput95/easybuggy-vulnerable-application/actions/workflows/snyk-security.yml) |
+
+### Triggers:
+The workflow is triggered on:
+* Manually (workflow_dispatch)
+* On Pull Request Events: When a pull request is:
+  - Opened
+  - Reopened
+  - Synchronized (when new commits are pushed to the pull request branch)
+* On Push to main branch, only if changes occur in:
+  - The `bookshelf/` directory
+  - workflow file itself `.github/workflows/snyk-scan.yaml`
+
+### Workflow Permissions Block:
+```
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+```
+* contents: read - Allows the workflow to read your repository’s files.
+* security-events: write - Required to upload SARIF files to GitHub Security Dashboard.
+* actions: read - Allows the workflow to run GitHub Actions.
+
+**Note:** To publish SARIF files to `GitHub Security`, you also need to enable Code Scanning for your repository in the settings.
+
+### Commands: 
+| **Feature** | **`snyk test`** | **`snyk monitor`** |
+|--------------|-----------------|--------------------|
+| **Purpose** | Immediate security testing | Long-term vulnerability monitoring |
+| **Output** | CLI results, JSON, SARIF | Snyk dashboard |
+| **Alerts** | No | Yes, continuous alerts |
+| **Impact on Snyk Dashboard** | No project created | Creates a project for ongoing monitoring |
+| **Typical Use** | CI/CD pipelines, local testing | Continuous security monitoring |
+| **Common Options** | `--json`, `--sarif-file-output`, `--all-projects` | `--project-name`, `--tags`, `--all-projects` |
+
+
+### Setting Up Snyk for GitHub Actions (Step by Step)
+### Step 1: Create a Snyk Account
+1. Go to [Snyk.io](https://snyk.io/) and create a free account.
+2. Complete the sign-up process using your email or GitHub
+
+### Step 2: Generate Snyk API Token
+1. Once logged in, go to the Settings page.
+2. Click on "API Token".
+3. Click "Generate" to create a new API token.
+4. Copy the generated token.
+
+![API Token](Images/snyk-api-token.png)
+
+### Step 3: Store the API Token in GitHub Secrets
+1. Go to your GitHub repository.
+2. Navigate to Settings → Secrets and variables → Actions → New repository secret.
+3. Set the Name as SNYK_TOKEN.
+4. Paste the copied API token as the Value.
+
+### Step 4: Reference the Token in Your Workflow
+Add the following env block in your GitHub Actions workflow to use the Snyk token:
+```
+env:
+  SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+```
+
+## Report
+| **Package Name** | **Title** | **Severity** | **Current Version** | **Fixed Version** | **Introduced By** |
+|------------------|-----------|--------------|---------------------|-------------------|-------------------|
+| dicer | Denial of Service (DoS) | High | 0.2.5 | None | nodejs-getting-started@* > multer@1.4.4 > busboy@0.2.14 > dicer@0.2.5 |
+| @google-cloud/firestore | Insecure Storage of Sensitive Information | Medium | 5.0.2 | 6.2.0 | nodejs-getting-started@* > @google-cloud/firestore@5.0.2 |
+| @grpc/grpc-js | Uncontrolled Resource Consumption | Medium | 1.6.12 | 1.8.22, 1.9.15, 1.10.9 | nodejs-getting-started@* > @google-cloud/firestore@5.0.2 > google-gax@2.30.5 > @grpc/grpc-js@1.6.12 |
+| protobufjs | Prototype Pollution | High | 6.11.3 | 6.11.4, 7.2.4 | nodejs-getting-started@* > @google-cloud/firestore@5.0.2 > google-gax@2.30.5 > protobufjs@6.11.3 |
+
+### Snyk UI
+![Snyk UI](Images/snyk-project-ui.png)
+
+### Snyk UI Logs
+![Snyk UI Logs](Images/snyk-report-ui.png)
+
+### Workflow log
+![Snyk workflow log](Images/snyk-workflow-log.png)
+
+### Github Security Published log
+![Snyk Github](Images/snyk-github-report.png)
+
+### Published Report
+![JSON Report](Images/snyk-json-report.png)
