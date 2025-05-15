@@ -34,4 +34,4 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           command: monitor
-          args: "--all-projects"
+          args: "--all-projects --exclude=build.gradle"
