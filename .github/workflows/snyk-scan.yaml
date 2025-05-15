@@ -21,20 +21,27 @@ jobs:
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
-        with:
-          node-version: 18  # Use the Node.js version in your project
 
       - name: Install Dependencies
         run: npm install
-        working-directory: ./bookshelf  # Ensure this is the correct directory
+        working-directory: ./bookshelf
 
       - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/node@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          command: test
+          args: "--all-projects --exclude=build.gradle --json-file-output=./bookshelf/snyk-report.json"
+      
+      - name: Run Snyk Monitor (Long-term Monitoring)
         uses: snyk/actions/node@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           command: monitor
-          args: "--all-projects --exclude=build.gradle --json-file-output=./snyk-report.json"
+          args: "--all-projects --exclude=build.gradle"
 
       - name: Upload Snyk Report as Artifact
         uses: actions/upload-artifact@v4
@@ -42,8 +49,12 @@ jobs:
           name: snyk-security-report
           path: ./bookshelf/snyk-report.json
 
+      - name: Convert Snyk JSON to SARIF
+        run: snyk-to-sarif ./bookshelf/snyk-report.json -o ./bookshelf/snyk-results.sarif
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
       - name: Publish Snyk Report to GitHub Security Dashboard
-        if: success()
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: ./bookshelf/snyk-report.json
+          sarif_file: ./bookshelf/snyk-results.sarif
