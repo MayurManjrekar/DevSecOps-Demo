@@ -57,11 +57,6 @@ jobs:
           command: monitor
           args: "--all-projects --exclude=build.gradle"
 
-      - run: |
-              ls -al  
-              cd bookshelf
-              ls -al 
-
       - name: Upload Snyk JSON as Artifact
         uses: actions/upload-artifact@v4
         with:
@@ -72,8 +67,8 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: ./bookshelf/snyk.sarif
-        env:
-           GITHUB_TOKEN: ${{ secrets.SECURITY_TOKEN }}
+        # env:
+        #    GITHUB_TOKEN: ${{ secrets.SECURITY_TOKEN }}
 
 
 
