@@ -35,4 +35,3 @@ jobs:
         with:
           command: monitor
           args: "--all-projects"
-        working-directory: ./bookshelf  # Ensure this is the correct directory
