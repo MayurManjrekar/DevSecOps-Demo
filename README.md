@@ -404,3 +404,7 @@ env:
 
 ### Published Report
 ![JSON Report](Images/snyk-json-report.png)
+
+### References
+* [Snyk Actions](https://github.com/snyk/actions/tree/master/node)
+* [Snyk CLI Commands](https://docs.snyk.io/snyk-cli/cli-commands-and-options-summary)
