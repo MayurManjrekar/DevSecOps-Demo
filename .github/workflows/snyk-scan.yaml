@@ -63,18 +63,12 @@ jobs:
           name: snyk-security-report
           path: ./bookshelf/snyk.json
 
-      - name: Upload SARIF as Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: SARIF
-          path: ./bookshelf/snyk.sarif
-
       - name: Upload the SARIF file to GitHub Security Dashboard
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: ./bookshelf/snyk.sarif
-
-
+        env:
+           GITHUB_TOKEN: ${{ secrets.SECURITY_TOKEN }}
 
 
 
