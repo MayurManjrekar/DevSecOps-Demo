@@ -49,6 +49,20 @@ jobs:
           command: test
           args: "--all-projects --exclude=build.gradle --sarif-file-output=./bookshelf/snyk.sarif"
 
+      - name: Snyk Job Summary
+        if: always()
+        run: |
+          if [ -s bookshelf/snyk.json ]; then
+            echo "### 🛑 Snyk detected vulnerabilities 🛑" >> $GITHUB_STEP_SUMMARY
+            echo "| Package | Severity | Issue | Path |" >> $GITHUB_STEP_SUMMARY
+            echo "|---------|----------|-------|------|" >> $GITHUB_STEP_SUMMARY
+            jq -r '.vulnerabilities[] | 
+              "| \(.package // "N/A") | \(.severity // "N/A") | \(.title // "N/A") | \(.from | join(" > ") // "N/A") |"' bookshelf/snyk.json >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✅ No vulnerabilities detected by Snyk." >> $GITHUB_STEP_SUMMARY
+          fi
+
+
       - name: Run Snyk Monitor
         uses: snyk/actions/node@master
         env:
