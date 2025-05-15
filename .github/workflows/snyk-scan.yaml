@@ -14,11 +14,7 @@ on:
 jobs:
   security:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-        working-directory: ${{ github.workspace }}/bookshelf
-        
+    
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -30,6 +26,7 @@ jobs:
 
       - name: Install Dependencies
         run: npm install
+        working-directory: ./bookshelf  # Ensure this is the correct directory
 
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/node@master
@@ -37,3 +34,5 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           command: monitor
+          args: "--all-projects"
+        working-directory: ./bookshelf  # Ensure this is the correct directory
