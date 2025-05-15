@@ -34,14 +34,12 @@ jobs:
         with:
           command: test
           # args: "--all-projects --exclude=build.gradle --sarif-file-output=snyk.sarif"
-          # args: "--all-projects --exclude=build.gradle --json-file-output=./bookshelf/snyk-report.json"
-          args: "--all-projects --exclude=build.gradle"
-          json: true
+          args: "--all-projects --exclude=build.gradle --json-file-output=./snyk.json"
 
       - run: |
               ls -al  
               cd bookshelf
-              ls -al  
+              ls -al 
           
       - name: Run Snyk Monitor (Long-term Monitoring)
         uses: snyk/actions/node@master
@@ -51,17 +49,20 @@ jobs:
           command: monitor
           args: "--all-projects --exclude=build.gradle"
 
-      - name: Upload Snyk Report as Artifact
+      - name: Publish Snyk Report as Artifact
         uses: actions/upload-artifact@v4
         with:
           name: snyk-security-report
-          path: ./bookshelf/snyk.json
+          path: ./snyk.json
 
-      - uses: garethr/snyk-to-sarif@master
+      # - uses: garethr/snyk-to-sarif@master
+      - name: Install Snyk to SARIF Converter
+        run: npm install -g snyk-to-sarif
+        
       - uses: actions/upload-artifact@v4
         with:
           name: SARIF
-          path: ./bookshelf/snyk.sarif
+          path: ./snyk.sarif
 
       - run: |
               ls -al  
