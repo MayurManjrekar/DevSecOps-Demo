@@ -35,31 +35,22 @@ jobs:
           command: test
           args: "--all-projects --exclude=build.gradle --json-file-output=./bookshelf/snyk.json"
 
-      - run: |
-              ls -al  
-              cd bookshelf
-              ls -al 
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/node@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          command: test
+          args: "--all-projects --exclude=build.gradle --sarif-file-output=snyk.sarif"
 
-      - name: Validate Snyk JSON
-        run: |
-           cat ./bookshelf/snyk.json | jq .
-
-      - name: Run Snyk Monitor (Long-term Monitoring)
+      - name: Run Snyk Monitor
         uses: snyk/actions/node@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           command: monitor
           args: "--all-projects --exclude=build.gradle"
-
-      - name: Install Snyk to SARIF Converter
-        run: npm install -g snyk-to-sarif
-
-      - name: Convert Snyk JSON to SARIF
-        run: npx snyk-to-sarif ./bookshelf/snyk.json -o ./bookshelf/snyk.sarif
-
-      - name: Convert Snyk JSON to SARIF
-        run: snyk-to-sarif ./bookshelf/snyk.json -o ./bookshelf/snyk.sarif
 
       - run: |
               ls -al  
