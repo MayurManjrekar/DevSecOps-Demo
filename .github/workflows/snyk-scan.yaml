@@ -26,18 +26,38 @@ jobs:
         run: npm install
         working-directory: ./bookshelf
 
-      - name: Run Snyk Test
-        run: snyk test --all-projects --exclude=build.gradle --json-file-output=./bookshelf/snyk.json
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/node@master
+        continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-          
+        with:
+          command: test
+          args: "--all-projects --exclude=build.gradle --json-file-output=./bookshelf/snyk.json"
+
+      - run: |
+              ls -al  
+              cd bookshelf
+              ls -al 
+
       - name: Run Snyk Monitor (Long-term Monitoring)
-        run: snyk monitor --all-projects --exclude=build.gradle
+        uses: snyk/actions/node@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          command: monitor
+          args: "--all-projects --exclude=build.gradle"
+
+      - name: Install Snyk to SARIF Converter
+        run: npm install -g snyk-to-sarif
 
       - name: Convert Snyk JSON to SARIF
         run: snyk-to-sarif ./bookshelf/snyk.json -o ./bookshelf/snyk.sarif
+
+      - run: |
+              ls -al  
+              cd bookshelf
+              ls -al 
 
       - name: Upload Snyk JSON as Artifact
         uses: actions/upload-artifact@v4
