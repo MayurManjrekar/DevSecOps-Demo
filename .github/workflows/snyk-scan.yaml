@@ -40,6 +40,10 @@ jobs:
               cd bookshelf
               ls -al 
 
+      - name: Validate Snyk JSON
+        run: |
+           cat ./bookshelf/snyk.json | jq .
+
       - name: Run Snyk Monitor (Long-term Monitoring)
         uses: snyk/actions/node@master
         env:
