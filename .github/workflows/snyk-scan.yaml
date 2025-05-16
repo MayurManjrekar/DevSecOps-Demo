@@ -44,7 +44,7 @@ jobs:
         run: npm install -g @microsoft/sarif-multitool
 
       - name: Convert Snyk SARIF to HTML
-        run: multitool transform --output ./bookshelf/snyk.html ./bookshelf/snyk.sarif
+        run: sarif multitool transform --output ./bookshelf/snyk.html ./bookshelf/snyk.sarif
 
       - name: Upload Snyk HTML Report as Artifact
         uses: actions/upload-artifact@v4
