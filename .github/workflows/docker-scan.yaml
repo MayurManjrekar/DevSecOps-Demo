@@ -85,3 +85,16 @@ jobs:
         name: trivy-report
         path: trivy-report.json
         retention-days: 30
+
+    - name: Trivy Summary Report
+      run: |
+        if [ -s trivy-report.json ]; then
+          echo "### 🛑 Docker Vulnerability Scan Results 🛑" >> $GITHUB_STEP_SUMMARY
+          echo "| **Library** | **Vulnerability** | **Severity** | **Installed Version** | **Fixed Version** | **Title** |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------------|-------------------|--------------|-----------------------|-------------------|-----------|" >> $GITHUB_STEP_SUMMARY
+
+          jq -r '.Results[].Vulnerabilities[] | 
+            "| \(.PkgName // "N/A") | \(.VulnerabilityID // "N/A") | \(.Severity // "N/A") | \(.InstalledVersion // "N/A") | \(.FixedVersion // "N/A") | [\(.Title // "N/A")](\(.PrimaryURL // "N/A")) |"' trivy-report.json >> $GITHUB_STEP_SUMMARY
+        else
+          echo "✅ No vulnerabilities detected by Trivy." >> $GITHUB_STEP_SUMMARY
+        fi
