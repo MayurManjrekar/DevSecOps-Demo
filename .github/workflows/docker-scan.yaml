@@ -31,12 +31,16 @@ jobs:
     - name: Build Docker Image
       run: |
           docker build -t ${{env.IMAGE_NAME}} ./bookshelf
-      
-    - name: List Images
-      run: |
-          docker images
-      
-    - name: Run Snyk to check Docker image for vulnerabilities
+
+    - name: Install snyk to html
+      run: npm install snyk-to-html -g
+        
+    - name: Set up Snyk CLI
+      uses: snyk/actions/setup@806182742461562b67788a64410098c9d9b96adb
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+    - name: Snyk check Docker image for vulnerabilities
       continue-on-error: true
       uses: snyk/actions/docker@master
       env:
@@ -44,21 +48,14 @@ jobs:
       with:
         image: ${{env.IMAGE_NAME}}
         args: "--file=./bookshelf/Dockerfile --project-name=Bookshelf-App --sarif-file-output=snyk.sarif
-          --report --output=./bookshelf-scan.html --severity-threshold=high"
+          --severity-threshold=high"
 
-    - name: List Images
-      run: |
-          ls -al
-          cat snyk.sarif
-          cd bookshelf
-          ls -al
-
-    - name: Upload the SARIF file to GitHub Security Dashboard
+    - name: Upload Report to GitHub Security Dashboard
       uses: github/codeql-action/upload-sarif@v3
       with:
         sarif_file: ./snyk.sarif
 
-    - name: Run Snyk Monitor
+    - name: Upload Report to Snyk Dashboard
       if: always()
       uses: snyk/actions/docker@master
       env:
@@ -68,13 +65,13 @@ jobs:
         command: monitor
         args: "--project-name=Bookshelf-App --severity-threshold=high"
 
-    - name: List Images
+    - name: Run Snyk to check for vulnerabilities and generate Html report
+      continue-on-error: true
       run: |
-          ls -al
-          cd bookshelf
-          ls -al
+        snyk auth ${{ secrets.SNYK_TOKEN }}
+        snyk test --json | snyk-to-html -o bookshelf-scan.html
 
-    - name: Upload HTML Report as Artifact
+    - name: Upload Report as Artifact
       uses: actions/upload-artifact@v4
       with:
         name: bookshelf-scan-report
