@@ -46,10 +46,16 @@ jobs:
         args: "--file=./bookshelf/Dockerfile --project-name=Bookshelf-App --sarif-file-output=snyk.sarif
           --report --output=./bookshelf-scan.html"
 
+    - name: List Images
+      run: |
+          ls -al
+          cd bookshelf
+          ls -al
+
     - name: Upload the SARIF file to GitHub Security Dashboard
       uses: github/codeql-action/upload-sarif@v3
       with:
-        sarif_file: ./bookshelf/snyk.sarif
+        sarif_file: ./snyk.sarif
 
     - name: Run Snyk Monitor
       if: always()
@@ -59,8 +65,13 @@ jobs:
       with:
         image: ${{env.IMAGE_NAME}}
         command: monitor
-        args: |
-            --project-name=Bookshelf-App
+        args: "--project-name=Bookshelf-App"
+
+    - name: List Images
+      run: |
+          ls -al
+          cd bookshelf
+          ls -al
 
     - name: Upload HTML Report as Artifact
       uses: actions/upload-artifact@v4
