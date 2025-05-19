@@ -46,15 +46,20 @@ jobs:
         snyk auth ${{ secrets.SNYK_TOKEN }}
         snyk container test ${{env.IMAGE_NAME}} --file=./bookshelf/Dockerfile --project-name=Bookshelf-App --sarif-file-output=./snyk.sarif --severity-threshold=high --json | snyk-to-html -o bookshelf-scan.html
 
-    - name: Snyk check Docker image for vulnerabilities
-      continue-on-error: true
-      uses: snyk/actions/docker@master
-      env:
-        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      with:
-        image: ${{env.IMAGE_NAME}}
-        args: "--file=./bookshelf/Dockerfile --project-name=Bookshelf-App --sarif-file-output=snyk.sarif
-          --severity-threshold=high"
+    - run: | 
+          ls -al 
+          cd bookshelf 
+          ls -al
+
+    # - name: Snyk check Docker image for vulnerabilities
+    #   continue-on-error: true
+    #   uses: snyk/actions/docker@master
+    #   env:
+    #     SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+    #   with:
+    #     image: ${{env.IMAGE_NAME}}
+    #     args: "--file=./bookshelf/Dockerfile --project-name=Bookshelf-App --sarif-file-output=snyk.sarif
+    #       --severity-threshold=high"
 
     - name: Upload Report to GitHub Security Dashboard
       uses: github/codeql-action/upload-sarif@v3
