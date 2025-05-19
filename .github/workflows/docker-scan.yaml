@@ -50,10 +50,10 @@ jobs:
           --report
           --output=./bookshelf-scan.html
 
-    - name: Upload result to GitHub Code Scanning
+    - name: Upload the SARIF file to GitHub Security Dashboard
       uses: github/codeql-action/upload-sarif@v3
       with:
-        sarif_file: snyk.sarif
+        sarif_file: ./bookshelf/snyk.sarif
 
     # - name: Upload to Snyk Dashboard
     #   if: always()
