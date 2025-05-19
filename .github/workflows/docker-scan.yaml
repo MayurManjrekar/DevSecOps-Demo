@@ -73,7 +73,6 @@ jobs:
             --project-name=Bookshelf-App
 
     - name: Upload HTML Report as Artifact
-      if: always()
       uses: actions/upload-artifact@4
       with:
         name: bookshelf-scan-report
