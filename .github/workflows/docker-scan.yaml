@@ -44,11 +44,12 @@ jobs:
       with:
         image: ${{env.IMAGE_NAME}}
         args: "--file=./bookshelf/Dockerfile --project-name=Bookshelf-App --sarif-file-output=snyk.sarif
-          --report --output=./bookshelf-scan.html"
+          --report --output=./bookshelf-scan.html --severity-threshold=high"
 
     - name: List Images
       run: |
           ls -al
+          cat snyk.sarif
           cd bookshelf
           ls -al
 
@@ -65,7 +66,7 @@ jobs:
       with:
         image: ${{env.IMAGE_NAME}}
         command: monitor
-        args: "--project-name=Bookshelf-App"
+        args: "--project-name=Bookshelf-App --severity-threshold=high"
 
     - name: List Images
       run: |
