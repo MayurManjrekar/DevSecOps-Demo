@@ -32,8 +32,8 @@ jobs:
       run: |
           docker build -t ${{env.IMAGE_NAME}} ./bookshelf
 
-    # - name: Install snyk to html
-    #   run: npm install snyk-to-html -g
+    - name: Install snyk to html
+      run: npm install snyk-to-html -g
         
     - name: Set up Snyk CLI
       uses: snyk/actions/setup@806182742461562b67788a64410098c9d9b96adb
