@@ -408,3 +408,41 @@ env:
 ### References
 * [Snyk Actions](https://github.com/snyk/actions/tree/master/node)
 * [Snyk CLI Commands](https://docs.snyk.io/snyk-cli/cli-commands-and-options-summary)
+
+
+
+## Assignment 6: Image Scanning
+### Objective: 
+Implement image scanning into the CI/CD pipeline to ensure container image security.
+
+## Docker Image Vulnerability Scan Workflow
+
+This GitHub Actions workflow is designed to **scan Docker images for security vulnerabilities** using **Snyk**, upload the results to the **GitHub Security Dashboard**, **Snyk Dashboard** and save a detailed **HTML report** as a build artifact.
+
+### Features:
+- **Docker Image Build:** Builds the Docker image for the **`bookshelf-app`**.
+- **Snyk Vulnerability Scanning:** Scans the Docker image for known vulnerabilities.
+- **SARIF Upload:** Publishes the scan results to the GitHub Security Dashboard.
+- **Snyk Monitoring:** Uploads scan results to the Snyk dashboard for continuous monitoring.
+- **HTML Report Generation:** Converts JSON output to a readable HTML report for easier analysis.
+
+### Triggers:
+The workflow is triggered on:
+* Manually (workflow_dispatch)
+* On Pull Request Events: When a pull request is:
+  - Opened
+  - Reopened
+  - Synchronized (when new commits are pushed to the pull request branch)
+* On Push to main branch, only if changes occur in:
+  - The `bookshelf/` directory
+  - workflow file itself `.github/workflows/docker-scan.yaml`
+
+
+## Report 
+| **Package Name**        | **Title**                                        | **Severity** | **Introduced By**                                                | **Fixed Version** |
+|-------------------------|--------------------------------------------------|--------------|------------------------------------------------------------------|-------------------|
+| zlib/zlib1g             | Integer Overflow or Wraparound                   | Critical     | docker-image → bookshelf-app@latest → zlib/zlib1g@1:1.2.11.dfsg-1+deb10u2 | Not Available |
+| db5.3/libdb5.3          | Out-of-bounds Read                               | Critical     | docker-image → bookshelf-app@latest → db5.3/libdb5.3@5.3.28+dfsg1-0.5 | Not Available |
+| gnutls28/libgnutls30    | Information Exposure                            | High         | docker-image → bookshelf-app@latest → gnutls28/libgnutls30@3.6.7-4+deb10u10 | Not Available |
+| gcc-8/libstdc++6        | Information Exposure                            | High         | docker-image → bookshelf-app@latest → gcc-8/libstdc++6@8.3.0-6 | Not Available |
+| systemd/libsystemd0     | Allocation of Resources Without Limits or Throttling | High         | docker-image → bookshelf-app@latest → systemd/libsystemd0@241-7~deb10u10 | Not Available |
