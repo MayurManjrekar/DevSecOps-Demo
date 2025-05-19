@@ -18,6 +18,7 @@ permissions:
 
 jobs:
   security:
+    name: 'Snyk Scan'
     runs-on: ubuntu-latest
     
     steps:
@@ -38,25 +39,16 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           command: test
+          args: "--all-projects --exclude=build.gradle --json-file-output=./bookshelf/snyk.json"
+
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/node@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          command: test
           args: "--all-projects --exclude=build.gradle --sarif-file-output=./bookshelf/snyk.sarif"
-
-      - name: Install SARIF to HTML Converter
-        run: npm install -g @microsoft/sarif-multitool
-
-      - name: Convert Snyk SARIF to HTML
-        run: sarif multitool transform --output ./bookshelf/snyk.html ./bookshelf/snyk.sarif
-
-      - name: Upload Snyk HTML Report as Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: snyk-security-report
-          path: ./bookshelf/snyk.html
-
-      - name: Upload Snyk Report as Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: snyk-security-report
-          path: ./bookshelf/snyk.html
 
       - name: Snyk Job Summary
         if: always()
@@ -66,7 +58,7 @@ jobs:
             echo "| Package | Severity | Issue | Path |" >> $GITHUB_STEP_SUMMARY
             echo "|---------|----------|-------|------|" >> $GITHUB_STEP_SUMMARY
             jq -r '.vulnerabilities[] | 
-              "| \(.package // "N/A") | \(.severity // "N/A") | \(.title // "N/A") | \(.from | join(" > ") // "N/A") |"' bookshelf/snyk.html >> $GITHUB_STEP_SUMMARY
+              "| \(.package // "N/A") | \(.severity // "N/A") | \(.title // "N/A") | \(.from | join(" > ") // "N/A") |"' bookshelf/snyk.json >> $GITHUB_STEP_SUMMARY
           else
             echo "✅ No vulnerabilities detected by Snyk." >> $GITHUB_STEP_SUMMARY
           fi
@@ -78,6 +70,12 @@ jobs:
         with:
           command: monitor
           args: "--all-projects --exclude=build.gradle"
+
+      - name: Upload Snyk JSON as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: snyk-security-report
+          path: ./bookshelf/snyk.json
 
       - name: Upload the SARIF file to GitHub Security Dashboard
         uses: github/codeql-action/upload-sarif@v3
