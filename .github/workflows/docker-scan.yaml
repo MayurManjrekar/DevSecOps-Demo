@@ -61,18 +61,27 @@ jobs:
     #     command: monitor
     #     args: "--project-name=Bookshelf-App --severity-threshold=high"
 
-    # - name: Upload Report as Artifact
+    # - name: Upload Snyk Report as Artifact
     #   uses: actions/upload-artifact@v4
     #   with:
     #     name: bookshelf-scan-report
     #     path: ./bookshelf-scan.html
 
     - name: Run Trivy vulnerability scanner
+      continue-on-error: true
       uses: aquasecurity/trivy-action@0.28.0
       with:
         image-ref: '${{env.IMAGE_NAME}}'
         format: 'table'
         exit-code: '1'
+        output: trivy-report.json
         ignore-unfixed: true
         vuln-type: 'os,library'
         severity: 'CRITICAL,HIGH'
+
+    - name: Upload Trivy Report as Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: trivy-report
+        path: trivy-report.json
+        retention-days: 30
