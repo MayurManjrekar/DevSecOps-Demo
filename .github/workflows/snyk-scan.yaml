@@ -20,8 +20,15 @@ jobs:
   security:
     name: 'Snyk Scan'
     runs-on: ubuntu-latest
-    
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ github.workspace }}/bookshelf
     steps:
+    - run: |
+          ls -al 
+          pwd
+
     - name: Checkout Code
       uses: actions/checkout@v3
 
@@ -32,23 +39,28 @@ jobs:
       run: npm install
       working-directory: ./bookshelf
 
-    - name: Snyk to check for vulnerabilities
-      uses: snyk/actions/node@master
-      continue-on-error: true
-      env:
-        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      with:
-        command: test
-        args: "--all-projects --exclude=build.gradle --json-file-output=./bookshelf/snyk.json"
+    # - name: Snyk to check for vulnerabilities
+    #   uses: snyk/actions/node@master
+    #   continue-on-error: true
+    #   env:
+    #     SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+    #   with:
+    #     command: test
+    #     args: "--all-projects --exclude=build.gradle --json-file-output=./bookshelf/snyk.json"
 
-    - name: Snyk to check for vulnerabilities
-      uses: snyk/actions/node@master
-      continue-on-error: true
-      env:
-        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      with:
-        command: test
-        args: "--all-projects --exclude=build.gradle --sarif-file-output=./bookshelf/snyk.sarif"
+    - run: |
+          ls -al 
+          pwd
+
+    # - name: Snyk to check for vulnerabilities
+    #   uses: snyk/actions/node@master
+    #   continue-on-error: true
+    #   env:
+    #     SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+    #   with:
+    #     command: test
+    #     args: "--all-projects --exclude=build.gradle --sarif-file-output=./bookshelf/snyk.sarif"
+
 
 ## Testing SBOM, It requires premium package
     - name: Install snyk to html
@@ -59,26 +71,24 @@ jobs:
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
+    - name: Snyk vulnerability Check
+      continue-on-error: true
+      run: |
+        pwd
+        ls -al
+        snyk auth ${{ secrets.SNYK_TOKEN }}
+        snyk test --project-name=Bookshelf-Code --exclude=build.gradle --sarif-file-output=./snyk.sarif --severity-threshold=high --json | snyk-to-html -o bookshelf-scan.html
+
     - name: Snyk SBOM Check
       continue-on-error: true
       run: |
+        pwd
+        ls -al
         snyk auth ${{ secrets.SNYK_TOKEN }}
-        snyk sbom --format=cyclonedx1.6+json --all-projects --json-file-output=sbom-report.json
+        snyk sbom --format=cyclonedx1.6+json --project-name=Bookshelf-Code --json-file-output=sbom-report.json
+        snyk sbom monitor --format=cyclonedx1.6+json --project-name=Bookshelf-Code
 
-    - name: Snyk Job Summary
-      if: always()
-      run: |
-        if [ -s bookshelf/snyk.json ]; then
-          echo "### 🛑 Snyk detected vulnerabilities 🛑" >> $GITHUB_STEP_SUMMARY
-          echo "| Package | Severity | Issue | Path |" >> $GITHUB_STEP_SUMMARY
-          echo "|---------|----------|-------|------|" >> $GITHUB_STEP_SUMMARY
-          jq -r '.vulnerabilities[] | 
-            "| \(.package // "N/A") | \(.severity // "N/A") | \(.title // "N/A") | \(.from | join(" > ") // "N/A") |"' bookshelf/snyk.json >> $GITHUB_STEP_SUMMARY
-        else
-          echo "✅ No vulnerabilities detected by Snyk." >> $GITHUB_STEP_SUMMARY
-        fi
-
-    - name: Run Snyk Monitor
+    - name: Snyk Monitor
       uses: snyk/actions/node@master
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
@@ -91,7 +101,7 @@ jobs:
       with:
         name: snyk-security-report
         path: |
-          ./bookshelf/snyk.json
+          ./bookshelf-scan.html
           ./sbom-report.json
 
 
