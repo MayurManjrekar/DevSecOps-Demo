@@ -96,7 +96,7 @@ jobs:
         name: snyk-security-report
         path: |
           ./bookshelf-scan.html
-          ./sbom-report.json
+          ./bookshelf/sbom-report.json
 
 
     - name: Upload the SARIF file to GitHub Security Dashboard
