@@ -95,7 +95,7 @@ jobs:
       with:
         name: snyk-security-report
         path: |
-          ./bookshelf-scan.html
+          ./bookshelf/bookshelf-scan.html
           ./bookshelf/sbom-report.json
 
 
