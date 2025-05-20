@@ -317,7 +317,7 @@ Key Features of SCA:
 * Supply Chain Security: Detects malicious or compromised packages in your supply chain.
 
 ### Pipelines:
-| CodeQL Scan for Bookshelf Application (Nodejs) & GitHub Actions workflow|
+| SCA Scan using Snyk|
 | --------------- |
 | [![Snyk Open Source Security](https://github.com/ravisinghrajput95/easybuggy-vulnerable-application/actions/workflows/snyk-security.yml/badge.svg)](https://github.com/ravisinghrajput95/easybuggy-vulnerable-application/actions/workflows/snyk-security.yml) |
 
@@ -410,13 +410,22 @@ env:
 * [Snyk CLI Commands](https://docs.snyk.io/snyk-cli/cli-commands-and-options-summary)
 
 
-
 ## Assignment 6: Image Scanning
 ### Objective: 
 Implement image scanning into the CI/CD pipeline to ensure container image security.
 
-## Docker Image Vulnerability Scan Workflow
+| Docker Image Scan using Snyk & Trivy|
+| --------------- |
+|[![Docker Image Scan](https://github.com/MayurManjrekar/DevSecOps-Demo/actions/workflows/docker-scan.yaml/badge.svg)](https://github.com/MayurManjrekar/DevSecOps-Demo/actions/workflows/docker-scan.yaml)|
 
+
+### Snyk
+Snyk is a security platform that helps identify and fix vulnerabilities in container images. It scans container images through the Snyk Web UI, CLI, or integrations with container registries like Docker Hub. Snyk provides detailed reports on vulnerabilities found in base images and application dependencies, along with actionable remediation advice, such as opening fix pull requests or suggesting image upgrades.
+
+### Trivy
+Trivy is an open-source vulnerability scanner developed by Aqua Security, designed to detect security issues in container images, file systems, and repositories. It scans for known vulnerabilities (CVEs) in OS packages and application dependencies, as well as misconfigurations and secrets. Trivy is known for its ease of use, requiring minimal setup, and can be integrated into CI/CD pipelines to automate security checks. 
+
+### Docker Image Vulnerability Scan Workflow
 This GitHub Actions workflow is designed to **scan Docker images for security vulnerabilities** using **Snyk**, upload the results to the **GitHub Security Dashboard**, **Snyk Dashboard** and save a detailed **HTML report** as a build artifact.
 
 ### Features:
@@ -437,6 +446,42 @@ The workflow is triggered on:
   - The `bookshelf/` directory
   - workflow file itself `.github/workflows/docker-scan.yaml`
 
+### Commands 
+1. Snyk test command:
+```
+snyk container test ${{env.IMAGE_NAME}} --file=./bookshelf/Dockerfile --project-name=Bookshelf-App --sarif-file-output=./snyk.sarif --severity-threshold=high --json | snyk-to-html -o bookshelf-scan.html 
+```
+
+| **Component**  | **Description** |  
+| ---------------|-----------------|
+| `snyk container test` | security scan on the specified container image to detect known vulnerabilities. |  
+| `${{env.IMAGE_NAME}}` | References the environment variable `IMAGE_NAME`,Docker image to be scanned. | 
+| `--file=./bookshelf/Dockerfile` | Provides the path to the Dockerfile used to build the image.|
+| `--project-name=Bookshelf-App` | Assigns a custom name, "Bookshelf-App", to the project within Snyk. |
+| `--sarif-file-output=./snyk.sarif` | Outputs the scan results in SARIF (Static Analysis Results Interchange Format) to the specified file. To publish the report in GitHub security dashboard |
+| `--severity-threshold=high` | Filters the scan results to include only vulnerabilities with a severity of "high" or "critical".|
+| `--json`  | Outputs the scan results in JSON format to the standard output.| 
+| `snyk-to-html -o bookshelf-scan.html` | Pipes the JSON output into the `snyk-to-html` tool, which converts the JSON data into a human-readable HTML report saved as `bookshelf-scan.html`. |
+
+2. Snyk authentication:
+```
+snyk auth ${{ secrets.SNYK_TOKEN }}
+```
+Authenticates the Snyk CLI using a token stored securely in GitHub Actions secrets, allowing subsequent Snyk commands to access the user’s Snyk account and perform vulnerability scans.
+
+3. Trivy test Command:
+
+| **Component**    | **Description**                                                                                   |
+|------------------|---------------------------------------------------------------------------------------------------|
+| `image-ref`      | The container image to be scanned for vulnerabilities.                                            |
+| `format`         | Defines the format of the vulnerability scan output (e.g., table, json, sarif).                   |
+| `exit-code`      | Determines which exit code to return if vulnerabilities are found; used for controlling workflow. |
+| `output`         | Specifies the file where the scan results will be saved.                                          |
+| `ignore-unfixed` | Ignores vulnerabilities that don’t have a fix yet, reducing noise in reports.                     |
+| `vuln-type`      | Indicates the types of vulnerabilities to scan for (e.g., OS packages, libraries).                |
+| `severity`       | Filters scan results to include only specified severity levels (e.g., HIGH, CRITICAL).            |
+
+
 
 ## Report 
 | **Package Name**        | **Title**                                        | **Severity** | **Introduced By**                                                | **Fixed Version** |
@@ -446,3 +491,28 @@ The workflow is triggered on:
 | gnutls28/libgnutls30    | Information Exposure                            | High         | docker-image → bookshelf-app@latest → gnutls28/libgnutls30@3.6.7-4+deb10u10 | Not Available |
 | gcc-8/libstdc++6        | Information Exposure                            | High         | docker-image → bookshelf-app@latest → gcc-8/libstdc++6@8.3.0-6 | Not Available |
 | systemd/libsystemd0     | Allocation of Resources Without Limits or Throttling | High         | docker-image → bookshelf-app@latest → systemd/libsystemd0@241-7~deb10u10 | Not Available |
+
+
+### Snyk UI
+![Docker Snyk UI Project](Images/docker-snyk-ui-project.png)
+![Docker Snyk UI](Images/docker-snyk-ui-report.png)
+
+### Snyk UI Logs
+![Docker Snyk UI Report](Images/docker-snyk-ui-report-2.png)
+
+### Workflow log
+![Docker Snyk workflow log](Images/snyk-workflow-log.png)
+
+### Github Security Published log
+![Docker Snyk Github](Images/docker-snyk-github-security-report.png)
+
+### Snyk Published Report
+![Docker HTML Report](Images/docker-snyk-html-report.png)
+
+### Trivy Published Report
+![Trivy Docker JSON Report](Images/docker-trivy-json-report.png)
+
+### References
+* [Snyk Actions](https://github.com/snyk/actions/tree/master/node)
+* [Snyk CLI Commands](https://docs.snyk.io/snyk-cli/cli-commands-and-options-summary)
+* [Trivy Actions](https://github.com/aquasecurity/trivy-action)
