@@ -25,12 +25,12 @@ jobs:
         shell: bash
         working-directory: ${{ github.workspace }}/bookshelf
     steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
     - run: |
           ls -al 
           pwd
-
-    - name: Checkout Code
-      uses: actions/checkout@v3
 
     - name: Set up Node.js
       uses: actions/setup-node@v3
