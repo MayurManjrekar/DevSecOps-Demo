@@ -316,6 +316,13 @@ Key Features of SCA:
 * Version Management: Alerts you to outdated or vulnerable versions of libraries.
 * Supply Chain Security: Detects malicious or compromised packages in your supply chain.
 
+### What is SBOM ?
+SBOM (Software Bill of Materials) is a comprehensive inventory of all components, libraries, and dependencies within a software project. It provides transparency into the software's composition, aiding in vulnerability management, license compliance, and supply chain security
+```
+snyk sbom --format=cyclonedx1.6+json --all-projects --json-file-output=mysbom.json
+```
+**Note:** The snyk sbom command is designed to generate a Software Bill of Materials (SBOM) for your project. However, this functionality is exclusive to customers on Snyk Enterprise plans.
+
 ### Pipelines:
 | SCA Scan using Snyk|
 | --------------- |
@@ -408,6 +415,7 @@ env:
 ### References
 * [Snyk Actions](https://github.com/snyk/actions/tree/master/node)
 * [Snyk CLI Commands](https://docs.snyk.io/snyk-cli/cli-commands-and-options-summary)
+* [Snyk SBOM](https://snyk.io/blog/creating-sboms-snyk-cli/)
 
 
 ## Assignment 6: Image Scanning
@@ -482,14 +490,13 @@ Authenticates the Snyk CLI using a token stored securely in GitHub Actions secre
 | `severity`       | Filters scan results to include only specified severity levels (e.g., HIGH, CRITICAL).            |
 
 
-
 ## Report 
-| **Package Name**        | **Title**                                        | **Severity** | **Introduced By**                                                | **Fixed Version** |
-|-------------------------|--------------------------------------------------|--------------|------------------------------------------------------------------|-------------------|
-| zlib/zlib1g             | Integer Overflow or Wraparound                   | Critical     | docker-image → bookshelf-app@latest → zlib/zlib1g@1:1.2.11.dfsg-1+deb10u2 | Not Available |
-| db5.3/libdb5.3          | Out-of-bounds Read                               | Critical     | docker-image → bookshelf-app@latest → db5.3/libdb5.3@5.3.28+dfsg1-0.5 | Not Available |
-| gnutls28/libgnutls30    | Information Exposure                            | High         | docker-image → bookshelf-app@latest → gnutls28/libgnutls30@3.6.7-4+deb10u10 | Not Available |
-| gcc-8/libstdc++6        | Information Exposure                            | High         | docker-image → bookshelf-app@latest → gcc-8/libstdc++6@8.3.0-6 | Not Available |
+| **Package Name**  | **Title**   | **Severity** | **Introduced By**  | **Fixed Version** |
+|-------------------|-------------|--------------|--------------------|-------------------|
+| zlib/zlib1g             | Integer Overflow or Wraparound  | Critical | docker-image → bookshelf-app@latest → zlib/zlib1g@1:1.2.11.dfsg-1+deb10u2 | Not Available |
+| db5.3/libdb5.3          | Out-of-bounds Read    | Critical  | docker-image → bookshelf-app@latest → db5.3/libdb5.3@5.3.28+dfsg1-0.5 | Not Available |
+| gnutls28/libgnutls30    | Information Exposure  | High         | docker-image → bookshelf-app@latest → gnutls28/libgnutls30@3.6.7-4+deb10u10 | Not Available |
+| gcc-8/libstdc++6        | Information Exposure  | High         | docker-image → bookshelf-app@latest → gcc-8/libstdc++6@8.3.0-6 | Not Available |
 | systemd/libsystemd0     | Allocation of Resources Without Limits or Throttling | High         | docker-image → bookshelf-app@latest → systemd/libsystemd0@241-7~deb10u10 | Not Available |
 
 
@@ -501,7 +508,8 @@ Authenticates the Snyk CLI using a token stored securely in GitHub Actions secre
 ![Docker Snyk UI Report](Images/docker-snyk-ui-report-2.png)
 
 ### Workflow log
-![Docker Snyk workflow log](Images/snyk-workflow-log.png)
+![Docker Snyk workflow log](Images/docker-snyk-workflow-log.png)
+![Docker Trivy workflow log](Images/docker-trivy-workflow-log.png)
 
 ### Github Security Published log
 ![Docker Snyk Github](Images/docker-snyk-github-security-report.png)
