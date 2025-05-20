@@ -28,10 +28,6 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v3
 
-    - run: |
-          ls -al 
-          pwd
-
     - name: Set up Node.js
       uses: actions/setup-node@v3
 
@@ -47,10 +43,6 @@ jobs:
     #   with:
     #     command: test
     #     args: "--all-projects --exclude=build.gradle --json-file-output=./bookshelf/snyk.json"
-
-    - run: |
-          ls -al 
-          pwd
 
     # - name: Snyk to check for vulnerabilities
     #   uses: snyk/actions/node@master
@@ -108,4 +100,4 @@ jobs:
     - name: Upload the SARIF file to GitHub Security Dashboard
       uses: github/codeql-action/upload-sarif@v3
       with:
-        sarif_file: ./bookshelf/snyk.sarif
+        sarif_file: ./snyk.sarif
