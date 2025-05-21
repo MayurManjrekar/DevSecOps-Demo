@@ -326,7 +326,7 @@ snyk sbom --format=cyclonedx1.6+json --all-projects --json-file-output=mysbom.js
 ### Pipelines:
 | SCA Scan using Snyk|
 | --------------- |
-| [![Snyk Open Source Security](https://github.com/ravisinghrajput95/easybuggy-vulnerable-application/actions/workflows/snyk-security.yml/badge.svg)](https://github.com/ravisinghrajput95/easybuggy-vulnerable-application/actions/workflows/snyk-security.yml) |
+| [![Snyk Security Scan](https://github.com/MayurManjrekar/DevSecOps-Demo/actions/workflows/snyk-scan.yaml/badge.svg)](https://github.com/MayurManjrekar/DevSecOps-Demo/actions/workflows/snyk-scan.yaml) |
 
 ### Triggers:
 The workflow is triggered on:
