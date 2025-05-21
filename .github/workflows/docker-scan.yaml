@@ -90,5 +90,6 @@ jobs:
     - name: Summarize Trivy Vulnerabilities
       if: always()
       run: |
-        count=$(jq '[.Results[].Vulnerabilities[]? | select(.Severity == "HIGH" or .Severity == "CRITICAL")] | length' trivy-report.json)
+        count=$(grep -E 'HIGH|CRITICAL' trivy-report.json | wc -l)
         echo "## Trivy Vulnerabilities: $count detected" >> $GITHUB_STEP_SUMMARY
+
