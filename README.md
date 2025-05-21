@@ -363,7 +363,7 @@ permissions:
 | **Common Options** | `--json`, `--sarif-file-output`, `--all-projects` | `--project-name`, `--tags`, `--all-projects` |
 
 
-### Setting Up Snyk for GitHub Actions (Step by Step)
+### Setting Up Snyk
 ### Step 1: Create a Snyk Account
 1. Go to [Snyk.io](https://snyk.io/) and create a free account.
 2. Complete the sign-up process using your email or GitHub
@@ -388,6 +388,18 @@ Add the following env block in your GitHub Actions workflow to use the Snyk toke
 env:
   SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 ```
+
+### Step 5: Setting up Snyk for CLI (Vs code editor)
+1. Install the Snyk CLI
+```
+npm install -g snyk
+```
+
+2. Authenticate with Snyk: This will open a browser window where you can log in to your Snyk account.
+```
+snyk auth
+```
+
 
 ## Report
 | **Package Name** | **Title** | **Severity** | **Current Version** | **Fixed Version** | **Introduced By** |
