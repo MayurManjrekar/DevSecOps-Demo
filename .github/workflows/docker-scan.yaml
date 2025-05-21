@@ -84,7 +84,7 @@ jobs:
     - name: Summarize Snyk Vulnerabilities
       if: always()
       run: |
-        count=$(jq '[.vulnerabilities[] | select(.severity == "high" or .severity == "critical")] | length' < snyk.sarif)
+        count=$(jq '[.runs[].results[] | select(.level == "error" or .level == "warning")] | length' snyk.sarif)
         echo "## Snyk Vulnerabilities: $count detected" >> $GITHUB_STEP_SUMMARY
 
     - name: Summarize Trivy Vulnerabilities
