@@ -80,3 +80,15 @@ jobs:
         path: |
           ./bookshelf-scan.html
           ./trivy-report.json
+    
+    - name: Summarize Snyk Vulnerabilities
+      if: always()
+      run: |
+        count=$(jq '[.vulnerabilities[] | select(.severity == "high" or .severity == "critical")] | length' < snyk.sarif)
+        echo "## Snyk Vulnerabilities: $count detected" >> $GITHUB_STEP_SUMMARY
+
+    - name: Summarize Trivy Vulnerabilities
+      if: always()
+      run: |
+        count=$(jq '[.Results[].Vulnerabilities[]? | select(.Severity == "HIGH" or .Severity == "CRITICAL")] | length' trivy-report.json)
+        echo "## Trivy Vulnerabilities: $count detected" >> $GITHUB_STEP_SUMMARY

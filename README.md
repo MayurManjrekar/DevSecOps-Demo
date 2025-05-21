@@ -401,13 +401,36 @@ snyk auth
 ```
 
 
-## Report
-| **Package Name** | **Title** | **Severity** | **Current Version** | **Fixed Version** | **Introduced By** |
-|------------------|-----------|--------------|---------------------|-------------------|-------------------|
-| dicer | Denial of Service (DoS) | High | 0.2.5 | None | nodejs-getting-started@* > multer@1.4.4 > busboy@0.2.14 > dicer@0.2.5 |
-| @google-cloud/firestore | Insecure Storage of Sensitive Information | Medium | 5.0.2 | 6.2.0 | nodejs-getting-started@* > @google-cloud/firestore@5.0.2 |
-| @grpc/grpc-js | Uncontrolled Resource Consumption | Medium | 1.6.12 | 1.8.22, 1.9.15, 1.10.9 | nodejs-getting-started@* > @google-cloud/firestore@5.0.2 > google-gax@2.30.5 > @grpc/grpc-js@1.6.12 |
-| protobufjs | Prototype Pollution | High | 6.11.3 | 6.11.4, 7.2.4 | nodejs-getting-started@* > @google-cloud/firestore@5.0.2 > google-gax@2.30.5 > protobufjs@6.11.3 |
+### SBOM Report
+| **Name**         | **Version** | **License** | **PURL**                         |
+| ---------------- | ----------- | ----------- | -------------------------------- |
+| express          | 4.21.2      | MIT         | `pkg:npm/express@4.21.2`         |
+| lodash.camelcase | 4.3.0       | MIT         | `pkg:npm/lodash.camelcase@4.3.0` |
+| fast-deep-equal  | 3.1.3       | MIT         | `pkg:npm/fast-deep-equal@3.1.3`  |
+| google-gax       | 2.30.5      | Apache-2.0  | `pkg:npm/google-gax@2.30.5`      |
+| body-parser      | 1.20.3      | MIT         | `pkg:npm/body-parser@1.20.3`     |
+
+### Vulnerability Report
+| Severity | Vulnerability Description | Affected Package(s) & Version(s) | Remediation Recommendation | |
+| -------- | ------------------------- | -------------------------------- | -------- | ----------------- |
+| Medium   | Insecure Storage of Sensitive Information  | `@google-cloud/firestore` v5.0.2  | Upgrade to `@google-cloud/firestore` v6.2.0 or higher. |  |
+| High     | Prototype Pollution (CVE-2023-36665)  | `protobufjs` v6.11.3 (via `google-gax` > `protobufjs`)       | Upgrade `protobufjs` to v6.11.4, v7.2.4, or higher. |    |
+| High     | Denial of Service (DoS) (CVE-2022-24434)  | `dicer` v0.2.5 (via `busboy` > `dicer`)   | Upgrade `multer` to v1.4.5-lts.1 or higher. |   |
+| High     | Uncaught Exception  | `multer` v1.4.4 | Upgrade to `multer` v1.4.5-lts.1 or higher. |  |
+| High     | Missing Release of Memory after Effective Lifetime | `multer` v1.4. | Upgrade to `multer` v1.4.5-lts.1 or higher.  |  |
+| Medium   | Uncontrolled Resource Consumption (CVE-2024-37168) | `@grpc/grpc-js` v1.6.12 (via `google-gax` > `@grpc/grpc-js`) | Upgrade `@grpc/grpc-js` to v1.8.22, v1.9.15, v1.10.9, or higher.  | |
+
+### Resolving `Insecure Storage of Sensitive Information ` Vulnerability
+* Update @google-cloud/firestore to version 6.2.0 or higher:
+```
+npm install @google-cloud/firestore@^6.2.0
+```
+
+* Proof of concept
+
+![Snyk before resolving issue](Images/snyk-before-resolving-vulnerability.png)
+
+![Snyk after resolving issue](Images/snyk-after-resolving-vulnerability.png)
 
 ### Snyk UI
 ![Snyk UI](Images/snyk-project-ui.png)
@@ -507,8 +530,8 @@ Authenticates the Snyk CLI using a token stored securely in GitHub Actions secre
 |-------------------|-------------|--------------|--------------------|-------------------|
 | zlib/zlib1g             | Integer Overflow or Wraparound  | Critical | docker-image → bookshelf-app@latest → zlib/zlib1g@1:1.2.11.dfsg-1+deb10u2 | Not Available |
 | db5.3/libdb5.3          | Out-of-bounds Read    | Critical  | docker-image → bookshelf-app@latest → db5.3/libdb5.3@5.3.28+dfsg1-0.5 | Not Available |
-| gnutls28/libgnutls30    | Information Exposure  | High         | docker-image → bookshelf-app@latest → gnutls28/libgnutls30@3.6.7-4+deb10u10 | Not Available |
-| gcc-8/libstdc++6        | Information Exposure  | High         | docker-image → bookshelf-app@latest → gcc-8/libstdc++6@8.3.0-6 | Not Available |
+| gnutls28/libgnutls30    | Information Exposure  | High      | docker-image → bookshelf-app@latest → gnutls28/libgnutls30@3.6.7-4+deb10u10 | Not Available |
+| gcc-8/libstdc++6        | Information Exposure  | High      | docker-image → bookshelf-app@latest → gcc-8/libstdc++6@8.3.0-6 | Not Available |
 | systemd/libsystemd0     | Allocation of Resources Without Limits or Throttling | High         | docker-image → bookshelf-app@latest → systemd/libsystemd0@241-7~deb10u10 | Not Available |
 
 
@@ -536,3 +559,4 @@ Authenticates the Snyk CLI using a token stored securely in GitHub Actions secre
 * [Snyk Actions](https://github.com/snyk/actions/tree/master/node)
 * [Snyk CLI Commands](https://docs.snyk.io/snyk-cli/cli-commands-and-options-summary)
 * [Trivy Actions](https://github.com/aquasecurity/trivy-action)
+* [Snyk Docker](https://docs.snyk.io/scan-with-snyk/snyk-container/use-snyk-container/detect-the-container-base-image)
