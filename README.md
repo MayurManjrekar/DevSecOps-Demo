@@ -494,6 +494,13 @@ The workflow is triggered on:
 ```
 snyk container test ${{env.IMAGE_NAME}} --file=./bookshelf/Dockerfile --project-name=Bookshelf-App --sarif-file-output=./snyk.sarif --severity-threshold=high --json | snyk-to-html -o bookshelf-scan.html 
 ```
+```
+#CLI Command
+snyk container test sample-app \     
+  --file=dockerfile \
+  --json \
+  | snyk-to-html -o snyk-report.html
+```
 
 | **Component**  | **Description** |  
 | ---------------|-----------------|
@@ -524,16 +531,46 @@ Authenticates the Snyk CLI using a token stored securely in GitHub Actions secre
 | `vuln-type`      | Indicates the types of vulnerabilities to scan for (e.g., OS packages, libraries).                |
 | `severity`       | Filters scan results to include only specified severity levels (e.g., HIGH, CRITICAL).            |
 
+4. Docker commands:
+
+* Build docker image
+```
+docker build -t IMAGE_NAME ./DIRECTORY/PATH
+```
+
+* Run docker image
+```
+docker run -d -p 3000:3000 IMAGE_NAME
+```
+
+
 
 ## Report 
-| **Package Name**  | **Title**   | **Severity** | **Introduced By**  | **Fixed Version** |
-|-------------------|-------------|--------------|--------------------|-------------------|
-| zlib/zlib1g             | Integer Overflow or Wraparound  | Critical | docker-image → bookshelf-app@latest → zlib/zlib1g@1:1.2.11.dfsg-1+deb10u2 | Not Available |
-| db5.3/libdb5.3          | Out-of-bounds Read    | Critical  | docker-image → bookshelf-app@latest → db5.3/libdb5.3@5.3.28+dfsg1-0.5 | Not Available |
-| gnutls28/libgnutls30    | Information Exposure  | High      | docker-image → bookshelf-app@latest → gnutls28/libgnutls30@3.6.7-4+deb10u10 | Not Available |
-| gcc-8/libstdc++6        | Information Exposure  | High      | docker-image → bookshelf-app@latest → gcc-8/libstdc++6@8.3.0-6 | Not Available |
-| systemd/libsystemd0     | Allocation of Resources Without Limits or Throttling | High         | docker-image → bookshelf-app@latest → systemd/libsystemd0@241-7~deb10u10 | Not Available |
+| Vulnerability Type   | Affected Package  | Debian Version | CVE ID   | Remediation  |
+|----------------------|-------------------|----------------|----------|--------------|
+| Integer Overflow / Wraparound | zlib/zlib1g                     | Debian 10      | CVE-2023-45853      |  No fix in Debian 10.  Switch to Debian 11+ or remove the package.       |
+| XML External Entity (XXE)     | python3.7/libpython3.7-stdlib   | Debian 10      | CVE-2022-48565      | Upgrade to `python3.7` version `3.7.3-2+deb10u6` or later.                |
+| Buffer Overflow               | python2.7/libpython2.7-stdlib   | Debian 10      | CVE-2021-3177       | Upgrade to `python2.7` version `2.7.16-2+deb10u2`.  |
+| XML External Entity (XXE)     | python2.7/libpython2.7-stdlib   | Debian 10      | (XXE variant)        | Remove or upgrade Python 2.7 where possible; Python 2 is deprecated.      |
 
+
+### Resolving critical Vulnerabilities in Docker Image
+* Update base image from `node:14` to `node:18-slim`
+
+* Proof of concept
+
+![Docker Snyk before resolving issue](Images/docker-snyk-old-report.png)
+
+![Docker Snyk after resolving issue](Images/docker-snyk-slim-report.png)
+
+### Resolving `Integer Overflow / Wraparound` Vulnerability
+* Update base image from `node:18-slim` to `node:18-alpine`
+
+* Proof of concept
+
+![Docker Snyk after resolving issue](Images/docker-snyk-slim-report.png)
+
+![Docker Snyk after resolving issue](Images/docker-snyk-alpine-report.png)
 
 ### Snyk UI
 ![Docker Snyk UI Project](Images/docker-snyk-ui-project.png)
