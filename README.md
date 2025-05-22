@@ -592,6 +592,10 @@ docker run -d -p 3000:3000 IMAGE_NAME
 ### Trivy Published Report
 ![Trivy Docker JSON Report](Images/docker-trivy-json-report.png)
 
+### Snyk Email Notification
+![Docker Snyk Notification setting](Images/docker-snyk-email-notification-setting.png)
+![Docker Snyk Email Notification](Images/docker-snyk-email-alert.png)
+
 ### References
 * [Snyk Actions](https://github.com/snyk/actions/tree/master/node)
 * [Snyk CLI Commands](https://docs.snyk.io/snyk-cli/cli-commands-and-options-summary)
