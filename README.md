@@ -572,6 +572,20 @@ docker run -d -p 3000:3000 IMAGE_NAME
 
 ![Docker Snyk after resolving issue](Images/docker-snyk-alpine-report.png)
 
+### Trivy & Snyk comparision
+| **Category**        | **Trivy**                 | **Snyk**                     |
+| ------------------- | ------------------------- | ---------------------------- |
+| Total Vulns Found   | 4 (Node.js only)          | 5 (OS + Node.js)             |
+| CRITICAL Issues     | 1 (protobufjs)            | 1 (zlib)                     |
+| OS Package Scan     | Scanned, found 0 issues   | Scanned, found 1 issue (zlib)|
+| Node.js Scan        |  Detected 4 issues        | Detected 4 major issues      |
+| Fix Recommendations |  Yee, Clear fixed versions & brief summaries |	Yes, detailed remediation steps and context |
+| Remediation Details | Basic                     | Detailed                     |
+
+* Use both tools in combination:
+  - Run Trivy in CI/CD pipelines for OS and quick CVE checks.
+  - Use Snyk for deep application and open-source dependency analysis.
+
 ### Snyk UI
 ![Docker Snyk UI Project](Images/docker-snyk-ui-project.png)
 ![Docker Snyk UI](Images/docker-snyk-ui-report.png)
