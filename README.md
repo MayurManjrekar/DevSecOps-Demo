@@ -667,6 +667,23 @@ Final image does not contain build tools (like build-essential, python3) or any 
 8. Expose Only Needed Port
 <br/>Only exposes port 3000.
 
+### Docker command used 
+| **Command**                     | **Description**                                  |
+| ------------------------------- | ------------------------------------------------ |
+| `docker pull <image>`           | Download an image from a registry.               |
+| `docker build -t <tag> .`       | Build an image from a Dockerfile in current dir. |
+| `docker images`                 | List locally stored images.                      |
+| `docker ps`                     | List **running** containers.                     |
+| `docker ps -a`                  | List **all** containers (running & stopped).     |
+| `docker rm <container>`         | Remove a stopped container.                      |
+| `docker rmi <image>`            | Remove a local image.                            |
+| `docker stop <container>`       | Stop a running container.                        |
+| `docker start <container>`      | Start a stopped container.                       |
+| `docker restart <container>`    | Restart a container.                             |
+| `docker exec -it <container> /bin/bash` | Login as default user                    |
+| `docker exec -it --user 1001 <container> /bin/bash`  | Login as user (UID)         |
+| `docker exec -it --user myuser <container> /bin/bash`| Login as user (name)        |
+| `docker run -it <image> /bin/bash` | Start container + login                       |
 
 ### Report 
 
