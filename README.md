@@ -615,3 +615,174 @@ docker run -d -p 3000:3000 IMAGE_NAME
 * [Snyk CLI Commands](https://docs.snyk.io/snyk-cli/cli-commands-and-options-summary)
 * [Trivy Actions](https://github.com/aquasecurity/trivy-action)
 * [Snyk Docker](https://docs.snyk.io/scan-with-snyk/snyk-container/use-snyk-container/detect-the-container-base-image)
+
+
+## Assignment 7: Image Hardening
+### Objective: 
+Apply best practices for hardening container images to reduce attack surface and threat exposure.
+
+### Nodejs Base Images 
+
+| Image Type  | Example               | Size     | Has Shell? | 
+| ----------- | --------------------- | -------- | ---------- | 
+| Full Debian | `node:20`             | Large    | Yes        | 
+| Slim Debian | `node:20-slim`        | Medium   | Yes        | 
+| Alpine      | `node:20-alpine`      | Smallest | Yes        | 
+| Distroless  | `distroless/nodejs20` | Smallest | No         | 
+| Bitnami     | `Bitnami Node.js`     | Medium   | Yes        | 
+<br/>
+
+**Distroless Image (`distroless/nodejs20-debian12`)**
+<br/>A minimal Docker image from Google’s Distroless project, containing only Node.js 20 runtime and minimal OS libraries.
+* OS: Based on Debian 12 (Bookworm), but stripped down to the absolute minimum needed to run Node.js.
+* Image Size: Around 50–60 MB, much smaller than full Debian or Ubuntu images.
+* No Shell or Package Manager: No /bin/sh or /bin/bash — no interactive shell. No apt, apk, or other package managers.
+* Key Differences from Other Node.js Images: Other images (like node:20, node:20-slim, node:20-alpine) include shells, package managers, and some system utilities. Distroless has none of that — only the Node.js runtime and your app’s dependencies.
+* Security Benefits: Smaller attack surface.
+* Use Distroless for secure, minimal, production runtime images — not for development or interactive tasks.
+
+### Hardening Steps Taken
+1. Multi-Stage Builds
+<br/>Uses a builder image (node:20-buster) for compiling native modules and installing dependencies.
+Final image does not contain build tools (like build-essential, python3) or any unnecessary development files.
+
+2. Use of Minimal Base Image
+<br/>Final image uses distroless (gcr.io/distroless/nodejs20-debian12), which contains only the Node.js runtime and no extra OS tools (no shell, no package manager).This reduces the attack surface.
+
+3. Least Privilege Principle
+<br/>The final image runs as a non-root user (USER 1001). Avoids running the app as root.
+
+4. Remove Unnecessary Files
+<br/>Cleans up unneeded frontend artifacts and files (frontend/node_modules, .angular, src/assets ). Reduces Image size.
+
+5. Secure File Permissions
+<br/>Uses chown and chmod to ensure proper ownership and limited write permissions (g=u) for the runtime environment.
+
+6. No Hardcoded Secrets
+<br/>No environment variables or secrets exposed in the Dockerfile.
+
+7. Use COPY instead of ADD
+<br/>Uses COPY to copy the local files.
+
+8. Expose Only Needed Port
+<br/>Only exposes port 3000.
+
+
+### Report 
+
+| **Criteria**  | **Notes** |
+| ------------- | --------- |
+| **Select a Minimal Base Image**  | Uses `gcr.io/distroless/nodejs20-debian12` as final image — **very minimal** & secure, with only the Node.js runtime (no shells or package managers).|
+| **Install Only Required Packages** | In the `builder` stage: Installs only production dependencies with `npm install --omit=dev`. No extra dev dependencies in final image. |
+| **Remove Unnecessary Packages**  | Final image is built from scratch using multi-stage build (no build tools remain). Also cleans up unnecessary frontend artifacts (`rm -rf`). |
+| **Expose a user (Note UID, GID in report)** | Uses `USER 1001` in the final image. All relevant directories are chowned to UID `1001` to avoid running as root.  |
+| **Implement Multi-Stage Builds** | Uses two stages: `builder` and final runtime (`distroless`). Keeps final image clean of build tools and dependencies.  |
+| **Minimize Layers** | `RUN` commands — Optimized by combining them into fewer layers & remove unwanted dependencies |
+| **Optimize Image Size**  | Final image contains only app code and Node.js runtime — no build tools or caches. Uses `distroless` for minimal runtime. |
+| **Use COPY Instead of ADD** | Only uses `COPY`, which is more secure and predictable than `ADD`.  |
+| **Set Secure File Permissions** | Uses `chown` to set ownership to UID 1001 and `chmod -R g=u` for group write permissions where needed. |
+| **Disable Unnecessary Services** | No OS-level services running (distroless has no shell, no cron, no systemd). |
+| **Use Read-Only Root Filesystem** | Final image is with read-only, no login supported. |
+| **Avoid Hardcoded Secrets**  | No secrets (passwords, tokens) or sensitive environment variables in the Dockerfile. |
+| **Limit Network Capabilities** | Dockerfile itself doesn’t set network capabilities (done at runtime with `--cap-drop=ALL --cap-add=NET_BIND_SERVICE`). Final image is minimal, so default network capabilities are low. |
+| **Use Image Lifecycle Management** | **lifecycle management** (like image retention, scanning, auto-rebuilds) is handled externally in CI/CD or registry.  |
+
+**Image Lifecycle Management**
+```
+- name: Build Docker Image
+  run: docker build -t gcr.io/${{vars.PROJECT_ID}}/${{vars.APP_NAME}}:${{github.run_number}} .
+
+- name: List Docker Image
+  run: docker images 
+
+- name: gcloud setup
+  uses: google-github-actions/setup-gcloud@94337306dda8180d967a56932ceb4ddcf01edae7
+  with:
+    service_account_key: ${{ secrets.SA_KEY }}
+    project_id: ${{ vars.PROJECT_ID }}  
+
+- name: Authenticate gcloud
+  run: gcloud --quiet auth configure-docker
+
+- name: Push Docker to GCR
+  run: docker push gcr.io/${{vars.PROJECT_ID}}/${{vars.APP_NAME}}:${{github.run_number}}   
+
+- name: Delete Old Images
+  run: |
+    PROJECT_ID="${vars.PROJECT_ID}"
+    IMAGE_FAMILY="${vars.IMAGE_FAMILY}"
+    NUM_IMAGES_TO_KEEP="${vars.NUM_IMAGES_TO_KEEP}"
+    IMAGES=$(gcloud compute images list --project="${PROJECT_ID}" --filter="family:"${IMAGE_FAMILY}"" --format="value(name)" | sort -r )
+
+    # Count the number of images
+    NUM_IMAGES=$(echo "${IMAGES}" | wc -l)
+
+    # Calculate the images to deprecate
+    IMAGES_TO_DEPRECATE=$(echo "${IMAGES}" | tail -n +"$((NUM_IMAGES_TO_KEEP + 1 ))")
+
+    # Deprecate the images
+    if [ -n "${IMAGES_TO_DEPRECATE}" ]; then
+    # Delete images
+      gcloud compute images delete ${IMAGES_TO_DEPRECATE} --project="${PROJECT_ID}" --quiet
+      echo "Deleted images: ${IMAGES_TO_DEPRECATE}"
+    else
+      echo "No images to delete"
+    fi
+```
+
+### Base Image comparision
+| **Image base**   | **Total Vulnerabilities** | **Vulnerable Paths** | **Dependencies** |
+| -----------------| ------------------------- | -------------------- | ---------------- |
+| `distroless`     | 30 vulnerabilities        | 46                   | 960              |
+| `alpine`         | 31 vulnerabilities        | 231                  | 1156             |
+
+* More vulnerable paths in Alpine: Likely due to additional dependency paths created by Alpine-specific libraries.
+* No significant differences in critical vulnerabilities — both images are similarly exposed.
+* Alpine adds a few more vulnerabilities, but in lower severity (high, medium, low).
+* Alpine: Lighter image size, but slightly more vulnerabilities due to differences in dependency resolution and Alpine-specific packages.
+* Distroless: Fewer total vulnerabilities (but same critical issues).
+
+### limiting Network
+1. Create a local network (ICC disabled: containers cannot communicate by default)
+```
+docker network create --driver bridge --opt "com.docker.network.bridge.enable_icc"=false created-network
+```
+![created network](Images/docker-created-network.png)
+
+2. Inspect the created-network
+```
+docker network inspect created-network  
+```
+![Network Inspect](Images/docker-network-inspect.png)
+
+3. Login into the container 
+```
+docker run -it --network test-network --rm ubuntu /bin/bash 
+```
+4. Install the required dependencies if not already Installed 
+```
+apt-get update 
+apt install -y inetutils-ping 
+apt install -y net-tools
+```
+
+5. Get the ip adress of the container 
+```
+ipconfig
+```
+
+6. Verify the applied network limitations
+```
+ping <IP_ADDRESS>
+```
+![Docker Ping](Images/docker-isolated-network-ping.png)
+
+### Distroless login
+![Docker Snyk Github](Images/distroless-image-login.png)
+
+### Image size 
+![Image Size comparision](Images/docker-image-size.png)
+
+### References
+* [Juice Box App](https://github.com/juice-shop/juice-shop/blob/master/Dockerfile)
+* [Dostroless Image](https://github.com/GoogleContainerTools/distroless)
