@@ -22,6 +22,11 @@ jobs:
 
   zap-scan:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ github.workspace }}/juice-box
+
     steps:
     - name: Checkout Code
       uses: actions/checkout@v3
