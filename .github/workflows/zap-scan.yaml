@@ -1,0 +1,42 @@
+name: DAST Zap Scan
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [opened, reopened, synchronize]
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/zap-scan.yaml
+
+env:
+  INSTANCE_IP: 127.0.0.1:3000
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+jobs:
+  zap-scan:
+    name: ZAP Scan Baseline
+    runs-on: ubuntu-latest
+    steps:
+      # Docs: https://github.com/zaproxy/action-baseline
+      - name: ZAP Scan
+        uses: zaproxy/action-baseline@v0.12.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }} 
+          target: "http://${{ env.INSTANCE_IP }}:3000"
+          cmd_options: |
+            chmod a+rwx '/zap/wrk/zap.yaml'
+          allow_issue_writing: false  
+
+      # Docs: https://github.com/actions/upload-artifact
+      - name: Upload Scan Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap_report.html
+          path: .
+          retention-days: 1
