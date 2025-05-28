@@ -59,8 +59,14 @@ jobs:
         target: "http://localhost:3000"
         allow_issue_writing: false
 
+    - name: Start Juice Shop App
+      run: |
+          ls -al
+          pwd 
+
     - name: Upload ZAP Report
       uses: actions/upload-artifact@v4
+      continue-on-error: true
       with:
         name: zap_report.html
         path: report_html.html
