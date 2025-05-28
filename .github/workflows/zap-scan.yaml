@@ -58,6 +58,8 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }} 
         target: "http://localhost:3000"
+        cmd_options: |
+          chmod a+rwx '/zap/wrk/zap.yaml'  
         allow_issue_writing: false
 
     - name: Upload ZAP Report
