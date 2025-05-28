@@ -25,7 +25,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ${{ github.workspace }}/juice-box
+        working-directory: ${{ github.workspace }}/juice-shop
 
     steps:
     - name: Checkout Code
