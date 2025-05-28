@@ -19,24 +19,43 @@ permissions:
   actions: read
 
 jobs:
+
   zap-scan:
-    name: ZAP Scan Baseline
     runs-on: ubuntu-latest
     steps:
-      # Docs: https://github.com/zaproxy/action-baseline
-      - name: ZAP Scan
-        uses: zaproxy/action-baseline@v0.12.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }} 
-          target: "http://${{ env.INSTANCE_IP }}:3000"
-          cmd_options: |
-            chmod a+rwx '/zap/wrk/zap.yaml'
-          allow_issue_writing: false  
+    - name: Checkout Code
+      uses: actions/checkout@v3
 
-      # Docs: https://github.com/actions/upload-artifact
-      - name: Upload Scan Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: zap_report.html
-          path: .
-          retention-days: 1
+    - name: Build Docker Image
+      run: docker build -t juice-shop .
+
+    - name: List Docker Image
+      run: docker images 
+
+    - name: Start Juice Shop App
+      run: |
+        docker run -d -p 3000:3000 juice-shop 
+
+    - name: Wait for Juice Shop to be Ready
+      run: |
+        for i in {1..30}; do
+          if curl -s http://localhost:3000 >/dev/null; then
+            echo "Juice Shop is up!"
+            break
+          fi
+          echo "Waiting for Juice Shop..."
+          sleep 5
+        done
+
+    - name: ZAP Scan
+      uses: zaproxy/action-baseline@v0.12.0
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }} 
+        target: "http://localhost:3000"
+        allow_issue_writing: false
+
+    - name: Upload ZAP Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: zap_report.html
+        path: report_html.html
