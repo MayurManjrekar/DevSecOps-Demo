@@ -11,7 +11,7 @@ on:
       - .github/workflows/zap-scan.yaml
 
 env:
-  INSTANCE_IP: 127.0.0.1:3000
+  INSTANCE_IP: 127.0.0.1
 
 permissions:
   contents: read
