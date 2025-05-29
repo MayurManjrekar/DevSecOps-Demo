@@ -810,6 +810,10 @@ ping <IP_ADDRESS>
 ### Objective:
 Integrate a Dynamic Application Security Testing (DAST) tool into your deployment pipeline and report the findings.
 
+| DAST Scan with ZAP |
+| --------------- |
+| [![DAST Zap Scan](https://github.com/MayurManjrekar/DevSecOps-Demo/actions/workflows/zap-scan.yaml/badge.svg)](https://github.com/MayurManjrekar/DevSecOps-Demo/actions/workflows/zap-scan.yaml) |
+
 ### ZAP Modes
 1. **Safe Mode**
 * Active scanning is disabled
@@ -835,6 +839,41 @@ Integrate a Dynamic Application Security Testing (DAST) tool into your deploymen
 * No restrictions on target hosts
 * Most aggressive mode; can disrupt target applications
 
+### ZAP Scans:
+1. **Baseline Scan**
+</br>Performs a passive scan only, it does not attack the application.
+
+Identifies low-risk issues like:
+Missing security headers (e.g., X-Content-Type-Options, Content-Security-Policy)
+Cookies without Secure or HttpOnly flags
+Information leakage
+
+2. **Full Scan**
+</br>Performs a spider crawl followed by an active scan, attacking the app to find vulnerabilities.
+
+Finds high-risk vulnerabilities such as:
+SQL Injection
+Cross-Site Scripting (XSS)
+Remote code execution risks
+Broken authentication
+May affect or disrupt the app (not safe for production)
+
+3. **API Scan**
+</br>Scans APIs defined by an OpenAPI/Swagger/WSDL/GraphQL spec.
+
+Detects security issues in REST/SOAP/GraphQL endpoints
+Common issues found:
+Missing or weak authentication
+Lack of input validation
+Insecure HTTP methods
+Can do both passive and active analysis depending on configuration
+
+| Scan Type     | Description   | Intrusive | Best For | Input Required  |
+| ------------- | ------------- | --------- | ---------| ----------------|
+| **Baseline**  | Passive scan only, no attacks. Checks for basic issues like missing headers   | No        | Safe checks in CI/CD or production | Target URL |
+| **Full Scan** | Spider + active scan. Performs full attack simulation to find vulnerabilities | Yes       | Deep testing in staging/dev        | Target URL |
+| **API Scan**  | Scans API endpoints using specs like OpenAPI, WSDL, or GraphQL                | Optional  | Security testing of backend APIs   | API definition (e.g. Swagger) |
+
 ### Install ZAP
 
 1. Install Java
@@ -845,11 +884,30 @@ winget install --id Microsoft.OpenJDK.17 -e
 
 3. Configuring Browser proxy
 </br>`Zap >> Tools >> Option >> Network >> Local Servers/Proxies >> Add the adress & Port`
+![ZAP Network config](Images/zap-network-proxy-config.png)
 </br>`Browser >> Connection setting >> Add the adress & Port`
+![Browser config](Images/zap-browser-proxy-setting.png)
 
-4. Upload ca cert 
+4. Upload CA Certificate
 </br>`ZAP >> Tools >> Option >> Network >> Server Cert >> Download`
+![ZAP CA Cert](Images/zap-ca-cert.png)
 </br>`Browser >> Certificate settings >> Import the downloaded cert`
+![Browser CA Cert](Images/zap-browser-ca-cert.png)
+
+### Report 
+
+### Juice Shop UI
+![Juice shop Frontend](Images/juice-shop.png)
+
+### ZAP UI
+![ZAP UI](Images/zap-ui.png)
+
+### ZAP UI Report
+![ZAP UI Report](Images/zap-scan-ui-report.png)
+![ZAP UI Report Login Issue](Images/zap-login-ui-report.png)
+
+### ZAP Artifact Report
+![ZAP Artifact Report](Images/zap-scan-report-artifact.png)
 
 ### References
 * [Zap + GitHub Actions](https://www.zaproxy.org/blog/2020-04-09-automate-security-testing-with-zap-and-github-actions/)
