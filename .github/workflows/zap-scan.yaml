@@ -31,43 +31,36 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v3
 
-    - name: Build Docker Image
-      run: docker build -t juice-shop .
+    # - name: Build Docker Image
+    #   run: docker build -t juice-shop .
 
-    - name: List Docker Image
-      run: docker images 
+    # - name: List Docker Image
+    #   run: docker images 
 
-    - name: Start Juice Shop App
-      run: |
-        docker run -d -p 3000:3000 juice-shop 
+    # - name: Start Juice Shop App
+    #   run: |
+    #     docker run -d -p 3000:3000 juice-shop 
 
-    - name: Wait for Juice Shop to be Ready
-      run: |
-        for i in {1..30}; do
-          if curl -s http://localhost:3000 >/dev/null; then
-            echo "Juice Shop is up!"
-            break
-          fi
-          echo "Waiting for Juice Shop..."
-          sleep 5
-        done
+    # - name: Wait for Juice Shop to be Ready
+    #   run: |
+    #     for i in {1..30}; do
+    #       if curl -s http://localhost:3000 >/dev/null; then
+    #         echo "Juice Shop is up!"
+    #         break
+    #       fi
+    #       echo "Waiting for Juice Shop..."
+    #       sleep 5
+    #     done
 
-    - name: ZAP Baseline Scan
-      uses: zaproxy/action-baseline@v0.12.0
-      continue-on-error: true
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }} 
-        target: "http://localhost:3000"
-        cmd_options: |
-          chmod a+rwx '/zap/wrk/zap.yaml'  
-        allow_issue_writing: false
-
-    # - name: ZAP Full Scan
-    #   uses: zaproxy/action-full-scan@v0.12.0
+    # - name: ZAP Baseline Scan
+    #   uses: zaproxy/action-baseline@v0.12.0
     #   continue-on-error: true
     #   with:
     #     token: ${{ secrets.GITHUB_TOKEN }} 
     #     target: "http://localhost:3000"
+    #     cmd_options: |
+    #       chmod a+rwx '/zap/wrk/zap.yaml'  
+    #     allow_issue_writing: false
 
     # - name: ZAP Scan
     #   uses: zaproxy/action-api-scan@v0.9.0
@@ -75,12 +68,24 @@ jobs:
     #   with:
     #     token: ${{ secrets.GITHUB_TOKEN }} 
     #     target: "http://localhost:3000"
+    
+    - name: ZAP Full Scan
+      uses: zaproxy/action-full-scan@v0.12.0
+      continue-on-error: true
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        target: "https://juice-shop.herokuapp.com"
+        cmd_options: >
+          -r report_html.html
+          -z "-config ajaxSpider.browserId=firefox 
+              -config authentication.method=manualAuthentication 
+              -config authentication.loggedInIndicator='Welcome' 
+              -config authentication.loginPageUrl='https://juice-shop.herokuapp.com/rest/user/login' 
+              -config users.0.credentials.username=${{secrets.JUICE_SHOP_USER_NAME}}
+              -config users.0.credentials.password=${{secrets.JUICE_SHOP_USER_PASSWORD}}
 
     - name: Upload ZAP Report
       uses: actions/upload-artifact@v4
       with:
         name: zap-report
-        path: |
-          report_html.html
-          report_json.json
-          report_md.md
+        path: report_html.html
