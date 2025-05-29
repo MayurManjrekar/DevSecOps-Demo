@@ -896,6 +896,30 @@ winget install --id Microsoft.OpenJDK.17 -e
 
 ### Report 
 
+### Detected Issue
+| Alert Name                                                | Risk Level    | Instances |
+| --------------------------------------------------------- | ------------- | --------- |
+| Backup File Disclosure                                    | Medium        | 31        |
+| Bypassing 403                                             | Medium        | 5         |
+| CORS Misconfiguration                                     | Medium        | 94        |
+| Content Security Policy (CSP) Header Not Set              | Medium        | 12        |
+| Cross-Domain Misconfiguration                             | Medium        | 11        |
+| Hidden File Found                                         | Medium        | 4         |
+| Cross-Domain JavaScript Source File Inclusion             | Low           | 10        |
+| Dangerous JS Functions                                    | Low           | 2         |
+| Deprecated Feature Policy Header Set                      | Low           | 11        |
+| HTTPS Content Available via HTTP                          | Low           | 18        |
+| Insufficient Site Isolation Against Spectre Vulnerability | Low           | 10        |
+| Strict-Transport-Security Header Not Set                  | Low           | 12        |
+| Timestamp Disclosure - Unix                               | Low           | 12        |
+| Information Disclosure - Suspicious Comments              | Informational | 2         |
+| Modern Web Application                                    | Informational | 11        |
+| Non-Storable Content                                      | Informational | 2         |
+| Re-examine Cache-control Directives                       | Informational | 11        |
+| Storable and Cacheable Content                            | Informational | 1         |
+| Storable but Non-Cacheable Content                        | Informational | 10        |
+| User Agent Fuzzer                                         | Informational | 24        |
+
 ### Juice Shop UI
 ![Juice shop Frontend](Images/juice-shop.png)
 
@@ -907,7 +931,7 @@ winget install --id Microsoft.OpenJDK.17 -e
 ![ZAP UI Report Login Issue](Images/zap-login-ui-report.png)
 
 ### ZAP Artifact Report
-![ZAP Artifact Report](Images/zap-scan-report-artifact.png)
+![ZAP Artifact Report](Images/zap-juice-shop-hosted-report.png)
 
 ### References
 * [Zap + GitHub Actions](https://www.zaproxy.org/blog/2020-04-09-automate-security-testing-with-zap-and-github-actions/)
