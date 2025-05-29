@@ -11,7 +11,7 @@ on:
       - .github/workflows/zap-scan.yaml
 
 env:
-  INSTANCE_IP: 127.0.0.1
+  TARGET_ADRR: http://localhost:3000
 
 permissions:
   contents: read
@@ -52,7 +52,7 @@ jobs:
           sleep 5
         done
 
-    - name: ZAP Scan
+    - name: ZAP Baseline Scan
       uses: zaproxy/action-baseline@v0.12.0
       continue-on-error: true
       with:
@@ -61,6 +61,28 @@ jobs:
         cmd_options: |
           chmod a+rwx '/zap/wrk/zap.yaml'  
         allow_issue_writing: false
+
+    - name: ZAP Full Scan
+      uses: zaproxy/action-full-scan@v0.12.0
+      continue-on-error: true
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }} 
+        target: "http://localhost:3000"
+
+    - name: ZAP Scan
+      uses: zaproxy/action-api-scan@v0.9.0
+      continue-on-error: true
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }} 
+        target: "http://localhost:3000"
+
+    - name: List files
+      continue-on-error: true
+      run: |
+        ls -al 
+        pwd 
+        cd ..
+        ls -al 
 
     - name: Upload ZAP Report
       uses: actions/upload-artifact@v4

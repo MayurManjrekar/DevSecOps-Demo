@@ -774,7 +774,7 @@ docker network inspect created-network
 
 3. Login into the container 
 ```
-docker run -it --network test-network --rm ubuntu /bin/bash 
+docker run -it --network created-network --rm ubuntu /bin/bash 
 ```
 4. Install the required dependencies if not already Installed 
 ```
@@ -803,3 +803,58 @@ ping <IP_ADDRESS>
 ### References
 * [Juice Box App](https://github.com/juice-shop/juice-shop/blob/master/Dockerfile)
 * [Dostroless Image](https://github.com/GoogleContainerTools/distroless)
+
+
+## Assignment 8: Apply DAST in Deployment Pipeline
+
+### Objective:
+Integrate a Dynamic Application Security Testing (DAST) tool into your deployment pipeline and report the findings.
+
+### ZAP Modes
+1. **Safe Mode**
+* Active scanning is disabled
+* Fuzzing is disabled
+* Only passive scanning and manual browsing are allowed
+* Most restrictive and secure mode
+
+2. **Protected Mode**
+* Active scanning and fuzzing are allowed only for explicitly allowed hosts
+* Attempts to scan unauthorized hosts are blocked
+* Requires configuration of an allowed hosts list
+* Good balance between security and functionality
+
+3. **Standard Mode (Default)**
+* Full manual control over ZAP functionality
+* Active scanning and fuzzing are enabled
+* No automatic actions on newly discovered URLs
+* Use for general-purpose, manual security testing
+
+4. **Attack Mode**
+* Automatically performs active scanning on all discovered URLs
+* Combines spidering and scanning for comprehensive coverage
+* No restrictions on target hosts
+* Most aggressive mode; can disrupt target applications
+
+### Install ZAP
+
+1. Install Java
+```
+winget install --id Microsoft.OpenJDK.17 -e
+```
+2. Download [OWASP Zap](https://www.zaproxy.org/download/)
+
+3. Configuring Browser proxy
+</br>`Zap >> Tools >> Option >> Network >> Local Servers/Proxies >> Add the adress & Port`
+</br>`Browser >> Connection setting >> Add the adress & Port`
+
+4. Upload ca cert 
+</br>`ZAP >> Tools >> Option >> Network >> Server Cert >> Download`
+</br>`Browser >> Certificate settings >> Import the downloaded cert`
+
+### References
+* [Zap + GitHub Actions](https://www.zaproxy.org/blog/2020-04-09-automate-security-testing-with-zap-and-github-actions/)
+* [Medium Post](https://nakamastudio.medium.com/secure-app-deployment-with-github-actions-terraform-and-owasp-zap-53ca44ffb634)
+* [Download ZAP](https://www.zaproxy.org/download/)
+* [Zap Baseline + GitHub Actions](https://github.com/marketplace/actions/zap-baseline-scan)
+* [Zap full + GitHub Actions](https://github.com/marketplace/actions/zap-full-scan)
+* [Zap API + GitHub Actions](https://github.com/marketplace/actions/zap-api-scan)
