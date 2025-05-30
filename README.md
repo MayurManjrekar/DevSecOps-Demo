@@ -2,7 +2,6 @@
 Repository for testing & validating DevSecOps implementation 
 
 ## Assignment 1: Implementing Shift Left Security in CI/CD Pipeline
-
 ### Objective: 
 Implement security checks early in the development process by integrating them into your CI/CD pipeline using GitHub Actions or GitLab CI.
 
@@ -35,7 +34,6 @@ This workflow is triggered under the following conditions:
 This allows for immediate application releases without blocking on security scans, useful for critical hotfixes or fast deployment cycles. However, it's recommended to perform these checks post-deployment in such cases.
 
 ### Job Descriptions and Tools Used
-
 | Security Check | Tool | Description| output |
 |----------------|------|------------| ------ |
 | Linting Job | ESLint | ESLint is a static code analysis tool for JavaScript. Its primary purpose is to identify and report on patterns found in JavaScript code, the goal is making code more consistent and checking for any syntax errors. | Contains `eslint_report.txt`, showing any linting/syntax issues in tabular format. |
@@ -51,9 +49,10 @@ I selected these tools based on several practical and strategic considerations:
 * No Licensing or API Keys Required: These tools run entirely within the CI environment without requiring external API keys, tokens, or paid licenses.
 * Purpose-Built for their Use Cases: Each tool is widely adopted and trusted for its specific domain—linting, secrets detection, or dependency auditing—making them reliable for targeted security and quality checks.
 
+***
+***
 
 ## Assignment 2: Enable GHAS for a repository
-
 ### Objective:
 GitHub Advanced Security features for a repository.
 
@@ -74,7 +73,6 @@ This workflow is triggered under the following conditions:
 * Scheduled run every Monday at 00:19 UTC
 
 ### Security Analysis and Tools Used
-
 | Security Check        | Tool | Description|
 |-----------------------|------|------------|
 | Documentation/Process | Policy | A file `(SECURITY.md)` that outlines how users and contributors should report vulnerabilities. It helps standardize and communicate your project's vulnerability disclosure process. |
@@ -89,16 +87,16 @@ This workflow is triggered under the following conditions:
 | Code scanning  | Workflow does not contain permissions | Medium | The issue indicates that the GitHub Actions workflow has default (excessive) permissions, which violates the principle of least privilege. To resolve it we can add `permissions` block to our workflow to restrict access.|
 | Dependabot Alert | @google-cloud/firestore Logging Issue | Moderate | The alert warns that older versions of the @google-cloud/firestore library (before v6.1.0) & its code dependency. we can upgrade the dependency within `package.json` |
 
-
 * Permission block added to the workflow 
 ```
 permissions:
   contents: read
 ```
 
+***
+***
 
 ## Assignment 4: Using SonarQube for SAST capabilities
-
 ### Objective: 
 Integrate SonarQube and upload the reports.
 
@@ -111,7 +109,6 @@ SonarQube is an open-source platform for continuous inspection of code quality. 
 
 **Metrics & Reports:**
 Generates detailed reports on code quality and security issues. Displays quality gates for each project (e.g., whether your code meets the defined quality standards).
-
 
 ### What is Gradle?
 Gradle is a powerful open-source build automation tool used primarily for:
@@ -150,7 +147,6 @@ Password: admin
 
 * Change the password.
 
-
 ### Step 3: Installing Dependencies
 * Install Homebrew
 ```
@@ -175,7 +171,6 @@ brew install gradle
 ```
 brew install node
 ```
-
 
 ### Step 4: Create build.gradle for Your Project
 * In your project directory, create a build.gradle file with the following content:
@@ -270,11 +265,8 @@ gradle build sonarqube
 | `build`    | Compiles the source code, runs unit tests, and creates output artifacts | Validates that the code builds correctly and tests pass    |
 | `sonarqube`| Analyzes code quality and uploads results to the SonarQube server       | Identifies bugs, code smells, and vulnerabilities in your codebase   |
 
-
 ### Report
-
 #### Summary
-
 | Metric                | Description   |  Status          |
 | --------------------- | ------------- | ---------------- |
 | **Security**          | Checks for known vulnerabilities and insecure code | A (0 issues)       |
@@ -285,14 +277,16 @@ gradle build sonarqube
 | **Security Hotspots** | Sensitive code that may need manual review         | 0 hotspots         |
 | **Accepted Issues**   | Valid issues intentionally left unresolved         | 0 accepted         |
 
-
 #### SonarQube UI
+
 ![SonarQube UI](Images/Sonarqube-ui.png)
 
 #### SonarQube Report
+
 ![Sonarqube-report](Images/Sonarqube-report.png)
 
 #### Dectected Issues
+
 ![Sonarqube Vulnerability](Images/Sonarqube-vulnerability-report.png)
 ![Issue Description](Images/Report-description.png)
 
@@ -301,9 +295,10 @@ gradle build sonarqube
 * [Sonar analysis Meduim Post](https://allancarneirosantos.medium.com/how-to-get-full-sonar-analysis-from-local-code-8284a883149e)
 * [SonarQube commands](https://docs.gradle.org/8.14/userguide/command_line_interface.html#sec:command_line_warnings)
 
+***
+***
 
 ## Assignment 5: Integrating SCA in CI pipeline
-
 ### Objective:
 Implement Software Composition Analysis (SCA) to identify and manage vulnerabilities in open-source components and report the findings.
 
@@ -362,7 +357,6 @@ permissions:
 | **Typical Use** | CI/CD pipelines, local testing | Continuous security monitoring |
 | **Common Options** | `--json`, `--sarif-file-output`, `--all-projects` | `--project-name`, `--tags`, `--all-projects` |
 
-
 ### Setting Up Snyk
 ### Step 1: Create a Snyk Account
 1. Go to [Snyk.io](https://snyk.io/) and create a free account.
@@ -400,7 +394,6 @@ npm install -g snyk
 snyk auth
 ```
 
-
 ### SBOM Report
 | **Name**         | **Version** | **License** | **PURL**                         |
 | ---------------- | ----------- | ----------- | -------------------------------- |
@@ -429,22 +422,26 @@ npm install @google-cloud/firestore@^6.2.0
 * Proof of concept
 
 ![Snyk before resolving issue](Images/snyk-before-resolving-vulnerability.png)
-
 ![Snyk after resolving issue](Images/snyk-after-resolving-vulnerability.png)
 
 ### Snyk UI
+
 ![Snyk UI](Images/snyk-project-ui.png)
 
 ### Snyk UI Logs
+
 ![Snyk UI Logs](Images/snyk-report-ui.png)
 
 ### Workflow log
+
 ![Snyk workflow log](Images/snyk-workflow-log.png)
 
 ### Github Security Published log
+
 ![Snyk Github](Images/snyk-github-report.png)
 
 ### Published Report
+
 ![JSON Report](Images/snyk-json-report.png)
 
 ### References
@@ -452,6 +449,8 @@ npm install @google-cloud/firestore@^6.2.0
 * [Snyk CLI Commands](https://docs.snyk.io/snyk-cli/cli-commands-and-options-summary)
 * [Snyk SBOM](https://snyk.io/blog/creating-sboms-snyk-cli/)
 
+***
+***
 
 ## Assignment 6: Image Scanning
 ### Objective: 
@@ -520,7 +519,6 @@ snyk auth ${{ secrets.SNYK_TOKEN }}
 Authenticates the Snyk CLI using a token stored securely in GitHub Actions secrets, allowing subsequent Snyk commands to access the user’s Snyk account and perform vulnerability scans.
 
 3. Trivy test Command:
-
 | **Component**    | **Description**                                                                                   |
 |------------------|---------------------------------------------------------------------------------------------------|
 | `image-ref`      | The container image to be scanned for vulnerabilities.                                            |
@@ -537,13 +535,10 @@ Authenticates the Snyk CLI using a token stored securely in GitHub Actions secre
 ```
 docker build -t IMAGE_NAME ./DIRECTORY/PATH
 ```
-
 * Run docker image
 ```
 docker run -d -p 3000:3000 IMAGE_NAME
 ```
-
-
 
 ## Report 
 | Vulnerability Type   | Affected Package  | Debian Version | CVE ID   | Remediation  |
@@ -553,14 +548,12 @@ docker run -d -p 3000:3000 IMAGE_NAME
 | Buffer Overflow               | python2.7/libpython2.7-stdlib   | Debian 10      | CVE-2021-3177       | Upgrade to `python2.7` version `2.7.16-2+deb10u2`.  |
 | XML External Entity (XXE)     | python2.7/libpython2.7-stdlib   | Debian 10      | (XXE variant)        | Remove or upgrade Python 2.7 where possible; Python 2 is deprecated.      |
 
-
 ### Resolving critical Vulnerabilities in Docker Image
 * Update base image from `node:14` to `node:18-slim`
 
 * Proof of concept
 
 ![Docker Snyk before resolving issue](Images/docker-snyk-old-report.png)
-
 ![Docker Snyk after resolving issue](Images/docker-snyk-slim-report.png)
 
 ### Resolving `Integer Overflow / Wraparound` Vulnerability
@@ -569,7 +562,6 @@ docker run -d -p 3000:3000 IMAGE_NAME
 * Proof of concept
 
 ![Docker Snyk after resolving issue](Images/docker-snyk-slim-report.png)
-
 ![Docker Snyk after resolving issue](Images/docker-snyk-alpine-report.png)
 
 ### Trivy & Snyk comparision
@@ -587,26 +579,33 @@ docker run -d -p 3000:3000 IMAGE_NAME
   - Use Snyk for deep application and open-source dependency analysis.
 
 ### Snyk UI
+
 ![Docker Snyk UI Project](Images/docker-snyk-ui-project.png)
 ![Docker Snyk UI](Images/docker-snyk-ui-report.png)
 
 ### Snyk UI Logs
+
 ![Docker Snyk UI Report](Images/docker-snyk-ui-report-2.png)
 
 ### Workflow log
+
 ![Docker Snyk workflow log](Images/docker-snyk-workflow-log.png)
 ![Docker Trivy workflow log](Images/docker-trivy-workflow-log.png)
 
 ### Github Security Published log
+
 ![Docker Snyk Github](Images/docker-snyk-github-security-report.png)
 
 ### Snyk Published Report
+
 ![Docker HTML Report](Images/docker-snyk-html-report.png)
 
 ### Trivy Published Report
+
 ![Trivy Docker JSON Report](Images/docker-trivy-json-report.png)
 
 ### Snyk Email Notification
+
 ![Docker Snyk Notification setting](Images/docker-snyk-email-notification-setting.png)
 ![Docker Snyk Email Notification](Images/docker-snyk-email-alert.png)
 
@@ -616,6 +615,8 @@ docker run -d -p 3000:3000 IMAGE_NAME
 * [Trivy Actions](https://github.com/aquasecurity/trivy-action)
 * [Snyk Docker](https://docs.snyk.io/scan-with-snyk/snyk-container/use-snyk-container/detect-the-container-base-image)
 
+***
+***
 
 ## Assignment 7: Image Hardening
 ### Objective: 
@@ -792,18 +793,23 @@ ipconfig
 ```
 ping <IP_ADDRESS>
 ```
+
 ![Docker Ping](Images/docker-isolated-network-ping.png)
 
 ### Distroless login
+
 ![Docker Snyk Github](Images/distroless-image-login.png)
 
 ### Image size 
+
 ![Image Size comparision](Images/docker-image-size.png)
 
 ### References
 * [Juice Box App](https://github.com/juice-shop/juice-shop/blob/master/Dockerfile)
 * [Dostroless Image](https://github.com/GoogleContainerTools/distroless)
 
+***
+***
 
 ## Assignment 8: Apply DAST in Deployment Pipeline
 
@@ -840,39 +846,27 @@ Integrate a Dynamic Application Security Testing (DAST) tool into your deploymen
 * Most aggressive mode; can disrupt target applications
 
 ### ZAP Scans:
-1. **Baseline Scan**
-</br>Performs a passive scan only, it does not attack the application.
-
-Identifies low-risk issues like:
-Missing security headers (e.g., X-Content-Type-Options, Content-Security-Policy)
-Cookies without Secure or HttpOnly flags
-Information leakage
-
-2. **Full Scan**
-</br>Performs a spider crawl followed by an active scan, attacking the app to find vulnerabilities.
-
-Finds high-risk vulnerabilities such as:
-SQL Injection
-Cross-Site Scripting (XSS)
-Remote code execution risks
-Broken authentication
-May affect or disrupt the app (not safe for production)
-
-3. **API Scan**
-</br>Scans APIs defined by an OpenAPI/Swagger/WSDL/GraphQL spec.
-
-Detects security issues in REST/SOAP/GraphQL endpoints
-Common issues found:
-Missing or weak authentication
-Lack of input validation
-Insecure HTTP methods
-Can do both passive and active analysis depending on configuration
-
 | Scan Type     | Description   | Intrusive | Best For | Input Required  |
 | ------------- | ------------- | --------- | ---------| ----------------|
-| **Baseline**  | Passive scan only, no attacks. Checks for basic issues like missing headers   | No        | Safe checks in CI/CD or production | Target URL |
-| **Full Scan** | Spider + active scan. Performs full attack simulation to find vulnerabilities | Yes       | Deep testing in staging/dev        | Target URL |
-| **API Scan**  | Scans API endpoints using specs like OpenAPI, WSDL, or GraphQL                | Optional  | Security testing of backend APIs   | API definition (e.g. Swagger) |
+| **Baseline**  | Performs a passive scan only, it does not attack the application.<br><br>Identifies low-risk issues:<ul><li>Missing security headers (e.g., X-Content-Type-Options, Content-Security-Policy)</li><li>Cookies without Secure or HttpOnly flags</li><li>Information leakage</li></ul> | No        | Safe checks in CI/CD or production | Target URL |
+| **Full Scan** | Performs a spider crawl followed by an active scan, attacking the app to find vulnerabilities.<br><br>Finds high-risk vulnerabilities such as:<ul><li>SQL Injection</li><li>Cross-Site Scripting (XSS)</li><li>Remote code execution risks</li><li>Broken authentication</li></ul><br>May affect or disrupt the app (not safe for production) | Yes       | Deep testing in staging/dev        | Target URL |
+| **API Scan**  | Scans APIs defined by an OpenAPI/Swagger/WSDL/GraphQL spec.<br><br>Detects security issues in REST/SOAP/GraphQL endpoints:<ul><li>Missing or weak authentication</li><li>Lack of input validation</li><li>Insecure HTTP methods</li></ul><br>Can do both passive and active analysis depending on configuration | Optional  | Security testing of backend APIs   | API definition (e.g. Swagger) |
+
+### Pros of DAST
+- **Black-box approach**: Tests applications in a way similar to how an attacker would, without requiring access to the source code.
+- **Language-agnostic**: Since it tests the running application, it doesn’t matter what programming language or framework was used.
+- **Can find real-world vulnerabilities**: Detects issues like XSS, SQL Injection, authentication flaws, etc., by simulating real attacks.
+- **Good for runtime environment**: Evaluates the app as it runs in its environment (e.g., staging or production).
+- **Easy integration**: Can be integrated into CI/CD pipelines for continuous scanning of deployed apps.
+
+### Cons of DAST
+- **Limited visibility**: Doesn’t have access to source code or app logic; might miss vulnerabilities that require code-level context.
+- **False positives and negatives**: Can miss subtle or complex issues (e.g., logic flaws), and sometimes flags safe behavior as risky.
+- **Slower scans**: Since it interacts with the running app, scans can be slower and may affect performance.
+- **Not ideal for early SDLC**: It’s typically used on a running app, so it’s harder to find vulnerabilities earlier in development (unlike SAST).
+- **Potential disruption**: Active scans can potentially impact app performance or stability, so caution is needed on production.
+
+---
 
 ### Install ZAP
 
@@ -894,7 +888,19 @@ winget install --id Microsoft.OpenJDK.17 -e
 </br>`Browser >> Certificate settings >> Import the downloaded cert`
 ![Browser CA Cert](Images/zap-browser-ca-cert.png)
 
+---
+
 ### Report 
+### Report Comparision 
+| Feature  | **Manual ZAP Scan**  | **Full Scan from CI/CD Pipeline**  |
+| -------- | -------------------- | ---------------------------------- |
+| **High-Risk Alerts**         | 1 high-risk alert (e.g., SQL Injection - SQLite)   | No high-risk alerts             |
+| **Medium-Risk Alerts**       | 4 medium-risk alerts (some with high confidence)   | 6 medium-risk alerts (like Backup File Disclosure, CORS)  |
+| **Low-Risk Alerts**          | 5 low-risk alerts (e.g., security headers missing) | 7 low-risk alerts               |
+| **Informational Alerts**     | 4 informational alerts                             | 7 informational alerts          |
+| **Number of Sites Scanned**  | 1 (`https://juice-shop.herokuapp.com`)             | 2 (`http` and `https` versions) |
+| **Specific alerts & counts** | The manual scan had unique alerts like XSS, RCE    | The CI/CD scan had detailed alerts like Backup File Disclosure, CORS issues, etc. |
+
 
 ### Detected Issue
 | Alert Name                                                | Risk Level    | Instances |
@@ -921,16 +927,20 @@ winget install --id Microsoft.OpenJDK.17 -e
 | User Agent Fuzzer                                         | Informational | 24        |
 
 ### Juice Shop UI
+
 ![Juice shop Frontend](Images/juice-shop.png)
 
 ### ZAP UI
+
 ![ZAP UI](Images/zap-ui.png)
 
 ### ZAP UI Report
+
 ![ZAP UI Report](Images/zap-scan-ui-report.png)
 ![ZAP UI Report Login Issue](Images/zap-login-ui-report.png)
 
 ### ZAP Artifact Report
+
 ![ZAP Artifact Report](Images/zap-juice-shop-hosted-report.png)
 
 ### References

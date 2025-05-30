@@ -10,9 +10,6 @@ on:
     paths:
       - .github/workflows/zap-scan.yaml
 
-env:
-  TARGET_ADRR: http://localhost:3000
-
 permissions:
   contents: read
   security-events: write
@@ -20,7 +17,7 @@ permissions:
 
 jobs:
   dast-scan:
-    name: 'Zap Scan'
+    name: 'Zap Scan on Juice Shop'
     runs-on: ubuntu-latest
     defaults:
       run:
